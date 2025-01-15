@@ -8,4 +8,5 @@
     <string name="add_topic">add topic</string>
     <string name="remove_tag">remove tag</string>
     <string name="icon_hashtag">icon hashtag</string>
+    <string name="settings">Settings</string>
 </resources>
