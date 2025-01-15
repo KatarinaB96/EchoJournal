@@ -25,3 +25,8 @@ val OutlineVariant = Color(0xFFC1C3CE)
 
 val Background = Color(0xFFFCFDFE)
 
+val GradientColor1 = Color(0xFFD9E2FF)
+val GradientColor2 = Color(0xFFEEF0FF)
+
+
+val BlueGradient1 = Color(0xFF578CFF)
