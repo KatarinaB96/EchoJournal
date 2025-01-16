@@ -52,7 +52,10 @@ fun SettingsScreen(
         )
     }) { paddingValues ->
         Column(Modifier.padding(paddingValues)) {
-            MoodCard()
+            MoodCard(  state = state,
+                onAction = { action ->
+                    viewModel.onAction(action)
+                })
             Spacer(Modifier.height(16.dp))
             FilterChipDropdown(
                 state = state,

@@ -10,17 +10,29 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.campus.echojournal.core.domain.models.Topic
+import com.campus.echojournal.core.utils.DataStoreManager
+import kotlinx.coroutines.flow.combine
 
-class SettingsViewModel(private val repository: JournalRepository) : ViewModel() {
-    private val _state = MutableStateFlow(ChipListState())
+class SettingsViewModel(
+    private val repository: JournalRepository,
+    private val dataStoreManager: DataStoreManager
+) : ViewModel() {
+    private val _state = MutableStateFlow(TopicListState())
 
-    val state = _state.onStart {
+    val state = combine(
+        _state,
+        dataStoreManager.getSavedMoodIndex
+    ) { currentState, savedMoodIndex ->
+
+        currentState.copy(savedMoodIndex = savedMoodIndex)
+    }.onStart {
         getChips()
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
         _state.value
     )
+
 
     private fun getChips() {
         viewModelScope.launch {
@@ -48,6 +60,15 @@ class SettingsViewModel(private val repository: JournalRepository) : ViewModel()
             is TopicListAction.OnDeleteTopic -> {
                 viewModelScope.launch {
                     repository.deleteTopicById(action.id)
+                }
+            }
+
+            is TopicListAction.OnMoodIndexChanged -> {
+                viewModelScope.launch {
+                    dataStoreManager.saveSelectedMoodIndex(action.index)
+                }
+                _state.update {
+                    it.copy(savedMoodIndex = action.index)
                 }
             }
         }

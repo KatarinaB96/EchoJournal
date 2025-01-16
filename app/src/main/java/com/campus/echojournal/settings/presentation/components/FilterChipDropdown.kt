@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.dp
 import com.campus.echojournal.R
 import com.campus.echojournal.core.domain.models.Topic
 import com.campus.echojournal.settings.presentation.TopicListAction
-import com.campus.echojournal.settings.presentation.ChipListState
+import com.campus.echojournal.settings.presentation.TopicListState
 import com.campus.echojournal.ui.theme.Gray6
 import com.campus.echojournal.ui.theme.OnErrorContainer
 import com.campus.echojournal.ui.theme.OnSurface
@@ -64,7 +64,7 @@ import com.campus.echojournal.ui.theme.Secondary
 
 @Composable
 fun FilterChipDropdown(
-    state: ChipListState,
+    state: TopicListState,
     onAction: (TopicListAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {

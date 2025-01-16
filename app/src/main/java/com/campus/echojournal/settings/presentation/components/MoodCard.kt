@@ -16,23 +16,23 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.campus.echojournal.R
-import com.campus.echojournal.core.utils.DataStoreManager
+import com.campus.echojournal.settings.presentation.TopicListAction
+import com.campus.echojournal.settings.presentation.TopicListState
 import com.campus.echojournal.ui.theme.OnSurface
 import com.campus.echojournal.ui.theme.OnSurfaceVariant
-import kotlinx.coroutines.launch
 
 @Composable
-fun MoodCard() {
+fun MoodCard(
+    state: TopicListState,
+    onAction: (TopicListAction) -> Unit
+) {
     Card(
         modifier = Modifier
             .height(148.dp)
@@ -63,18 +63,20 @@ fun MoodCard() {
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(Modifier.height(14.dp))
-            SelectableMood()
+            SelectableMood(
+                savedMoodIndex = state.savedMoodIndex,
+                onMoodSelected = { index ->
+                    onAction(TopicListAction.OnMoodIndexChanged(index))
+                })
         }
     }
 }
 
 @Composable
-fun SelectableMood() {
-    val context = LocalContext.current
-    val dataStore = DataStoreManager(context)
-
-    val savedIndex = dataStore.getSavedMoodIndex.collectAsState(initial = -1)
-    val scope = rememberCoroutineScope()
+fun SelectableMood(
+    savedMoodIndex: Int,
+    onMoodSelected: (Int) -> Unit
+) {
 
     val moods = listOf(
         Pair(R.drawable.mood_stresses_active_off to R.drawable.mood_stresses_active, "Stressed"),
@@ -96,14 +98,12 @@ fun SelectableMood() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .clickable {
-                        scope.launch {
-                            dataStore.saveSelectedMoodIndex(index)
-                        }
+                        onMoodSelected(index)
                     }
             ) {
                 Image(
                     painter = painterResource(
-                        id = if (index == savedIndex.value) filledImage else emptyImage
+                        id = if (index == savedMoodIndex) filledImage else emptyImage
                     ),
                     contentDescription = "Mood $moodName",
                     modifier = Modifier.size(40.dp)
@@ -111,7 +111,7 @@ fun SelectableMood() {
                 Text(
                     text = moodName,
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (index == savedIndex.value) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (index == savedMoodIndex) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -121,5 +121,5 @@ fun SelectableMood() {
 @Preview
 @Composable
 fun MoodCardPreview() {
-    MoodCard()
+//    MoodCard()
 }
