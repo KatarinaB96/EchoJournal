@@ -1,4 +1,4 @@
-package com.campus.echojournal.entities.presentation.components
+package com.campus.echojournal.entries.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
