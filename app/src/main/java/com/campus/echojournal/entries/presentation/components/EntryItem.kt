@@ -40,8 +40,8 @@ fun EntryItem(
             Box(
                 modifier = Modifier
                     .width(2.dp)
-                    .fillMaxHeight(if(index == 2) 0.1f else 1f)
-                    .padding(top =if(index == 0) 20.dp else 0.dp)
+                    .fillMaxHeight(if (index == 2) 0.1f else 1f)
+                    .padding(top = if (index == 0) 20.dp else 0.dp)
                     .background(Color.Blue)
             )
 
@@ -86,9 +86,20 @@ fun EntryItem(
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 3
                 )
-                EntriesTopicChip(
-                    title = "Work"
-                )
+                Row(
+
+                ) {
+                    repeat(
+                        4
+                    ) {
+                        EntriesTopicChip(
+                            modifier = Modifier.padding(2.dp),
+                            title = "Work"
+                        )
+
+                    }
+                }
+
             }
         }
 
