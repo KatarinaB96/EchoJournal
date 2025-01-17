@@ -24,4 +24,5 @@ val Outline = Color(0xFF6C7085)
 val OutlineVariant = Color(0xFFC1C3CE)
 
 val Background = Color(0xFFFCFDFE)
+val Gray6 = Color(0xFFF2F2F7)
 
