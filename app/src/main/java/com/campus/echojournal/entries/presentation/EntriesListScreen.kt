@@ -5,6 +5,7 @@ package com.campus.echojournal.entries.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -95,11 +97,14 @@ private fun EntriesListScreen(
     )
 
     val selectedMoods = remember {
-        mutableStateListOf<String>()
+        mutableStateListOf<Pair<Int, String>>()
     }
     val selectedTopics = remember {
-        mutableStateListOf<String>()
+        mutableStateListOf<Pair<Int, String>>()
     }
+
+    val scrollState = rememberScrollState()
+
 
     Scaffold(
         floatingActionButton = {
@@ -171,9 +176,14 @@ private fun EntriesListScreen(
                     Row(
                         modifier = Modifier
                             .padding(bottom = 8.dp, top = 16.dp, start = 16.dp)
+                            .horizontalScroll(
+                                scrollState
+                            )
                     ) {
                         EntriesListFilterChip(
+                            showIcons = true,
                             title = "All Moods",
+                            selectedList = selectedMoods,
                             isActive = isOpenAllMoods,
                             onClick = {
                                 isOpenAllMoods = !isOpenAllMoods
@@ -185,9 +195,10 @@ private fun EntriesListScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         EntriesListFilterChip(
+                            showIcons = false,
+                            selectedList = selectedTopics,
                             isActive = isOpenAllTopics,
                             onClick = {
-
                                 isOpenAllTopics = !isOpenAllTopics
                                 if (isOpenAllTopics) {
                                     isOpenAllMoods = false
@@ -200,12 +211,15 @@ private fun EntriesListScreen(
                         SelectableFilterList(
                             itemList = allMoodsList,
                             isVisible = isOpenAllMoods,
-                            selectedItemList = selectedMoods,
+                            selectedItemList = selectedMoods.map {
+                                it.second
+                            },
                             onClick = { item ->
-                                if (selectedMoods.contains(item)) {
-                                    selectedMoods.remove(item)
-                                } else {
-                                    selectedMoods.add(item)
+                                if (!selectedMoods.removeAll { it.second == item }) {
+                                    val selectedMood = allMoodsList.find {
+                                        it.second == item
+                                    } ?: Pair(0, "")
+                                    selectedMoods.add(selectedMood)
                                 }
 
                             }
@@ -213,12 +227,15 @@ private fun EntriesListScreen(
                         SelectableFilterList(
                             itemList = allTopicsList,
                             isVisible = isOpenAllTopics,
-                            selectedItemList = selectedTopics,
-                            onClick = {
-                                if (selectedTopics.contains(it)) {
-                                    selectedTopics.remove(it)
-                                } else {
-                                    selectedTopics.add(it)
+                            selectedItemList = selectedTopics.map {
+                                it.second
+                            },
+                            onClick = { item ->
+                                if (!selectedTopics.removeAll { it.second == item }) {
+                                    val selectedTopic = allTopicsList.find {
+                                        it.second == item
+                                    } ?: Pair(0, "")
+                                    selectedTopics.add(selectedTopic)
                                 }
 
                             }

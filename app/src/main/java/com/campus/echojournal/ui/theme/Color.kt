@@ -34,3 +34,5 @@ val Neutral_35 = Color(0xFF41B278)
 val Neutral_95 = Color(0xFFEEF7F3)
 
 val SurfaceColor = Color(0xFF475D92)
+
+val LineColor = Color(0xFFDFE2E8)

@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.campus.echojournal.R
 import com.campus.echojournal.ui.theme.EchoJournalTheme
+import com.campus.echojournal.ui.theme.LineColor
 
 @Composable
 fun EntryItem(
@@ -39,10 +40,10 @@ fun EntryItem(
 
             Box(
                 modifier = Modifier
-                    .width(2.dp)
+                    .width(1.dp)
                     .fillMaxHeight(if (index == 2) 0.1f else 1f)
                     .padding(top = if (index == 0) 20.dp else 0.dp)
-                    .background(Color.Blue)
+                    .background(LineColor)
             )
 
             Image(
