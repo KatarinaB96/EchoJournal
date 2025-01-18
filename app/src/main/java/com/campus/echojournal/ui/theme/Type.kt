@@ -6,7 +6,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.campus.echojournal.R
 
@@ -48,7 +47,6 @@ val Typography = Typography(
         fontWeight = FontWeight.W500,
         fontSize = 26.sp,
         lineHeight = 32.sp,
-        textAlign = TextAlign.Right
     ),
 
     //Headline Medium
