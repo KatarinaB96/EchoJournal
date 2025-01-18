@@ -15,6 +15,8 @@ ksp = "2.0.20-1.0.24"
 kotlinSerialization = "1.7.3"
 core-splashscreen = "1.0.1"
 koin = "4.0.0"
+audiowaveform = "1.1.2"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +45,7 @@ koin-android-workmanager = { module = "io.insert-koin:koin-androidx-workmanager"
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
+audiowaveform = { group = "com.github.lincollincol", name = "compose-audiowaveform", version.ref = "audiowaveform" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
