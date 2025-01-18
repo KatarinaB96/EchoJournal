@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/compiler.xml
+/.idea/deploymentTargetSelector.xml
+/.idea/kotlinc.xml
+
