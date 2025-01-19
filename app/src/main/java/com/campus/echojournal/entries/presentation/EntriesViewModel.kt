@@ -20,7 +20,11 @@ class EntriesViewModel : ViewModel() {
     fun onAction(action: EntriesAction) {
         when (action) {
             EntriesAction.onCancelRecording -> TODO()
-            EntriesAction.onClickAddEntry -> TODO()
+            EntriesAction.onClickAddEntry -> {
+                state = state.copy(
+                    isRecordAudioBottomSheetOpen = true
+                )
+            }
             EntriesAction.onClickAllMoods -> {
 
                 state = state.copy(
@@ -63,6 +67,12 @@ class EntriesViewModel : ViewModel() {
                 }
                 state = state.copy(
                     selectedTopics = selectedTopics
+                )
+            }
+
+            EntriesAction.OnDismissRecordAudioBottomSheet -> {
+                state = state.copy(
+                    isRecordAudioBottomSheetOpen = false
                 )
             }
             else -> Unit

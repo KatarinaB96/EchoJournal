@@ -10,14 +10,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -54,43 +62,47 @@ fun EntriesListScreenRoot(
                 is EntriesAction.onSettingsClick -> {
                     onSettingsClick()
                 }
+
                 else -> Unit
             }
             viewModel.onAction(action)
 
         }
-
-
     )
-
 }
 
 @Composable
 
 private fun EntriesListScreen(
-
-
     state: EntriesState,
-
     onAction: (EntriesAction) -> Unit
-
 ) {
     val entriesList = listOf<String>(
         "Echo 1",
         "Echo 2",
     )
+    val skipPartiallyExpanded by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = skipPartiallyExpanded,
+        confirmValueChange = {
+            if (it == SheetValue.PartiallyExpanded || it == SheetValue.Hidden)
+                true
+            else false
 
+        }
 
-
-
+    )
 
     val scrollState = rememberScrollState()
+
 
 
     Scaffold(
         floatingActionButton = {
             EchoFloatingActionButton(
-                onClick = { },
+                onClick = {
+                    onAction(EntriesAction.onClickAddEntry)
+                },
                 icon = {
                     Image(
                         painter = painterResource(id = R.drawable.ic_add),
@@ -109,6 +121,36 @@ private fun EntriesListScreen(
         modifier = Modifier
             .fillMaxSize(),
     ) { paddingValues ->
+
+        if (state.isRecordAudioBottomSheetOpen) {
+            ModalBottomSheet(
+
+                sheetState = sheetState,
+                onDismissRequest = {
+                    onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
+
+                },
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.4f)
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    GradientColor1.copy(alpha = 0.4F),
+                                    GradientColor2.copy(alpha = 0.4F)
+                                ),
+                                start = Offset(0f, 0f),
+                                end = Offset(0f, Float.POSITIVE_INFINITY)
+                            )
+                        )
+                ) {
+
+                }
+            }
+        }
 
         Box(
             modifier = Modifier
@@ -170,7 +212,7 @@ private fun EntriesListScreen(
                             selectedList = state.selectedMoods,
                             isActive = state.isAllMoodsOpen,
                             onClick = {
-                              onAction(EntriesAction.onClickAllMoods)
+                                onAction(EntriesAction.onClickAllMoods)
                             }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -192,7 +234,7 @@ private fun EntriesListScreen(
                                 it.second
                             },
                             onClick = { item ->
-                               onAction(EntriesAction.onSelectFilterMoods(item))
+                                onAction(EntriesAction.onSelectFilterMoods(item))
                             }
                         )
                         SelectableFilterList(

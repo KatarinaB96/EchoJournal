@@ -11,6 +11,7 @@ sealed interface EntriesAction {
     data class onPauseAudio(val id: Int): EntriesAction
 
     data object onClickAddEntry: EntriesAction
+    data object OnDismissRecordAudioBottomSheet: EntriesAction
 
     data object onCancelRecording: EntriesAction
     data object onPauseRecording: EntriesAction
@@ -19,9 +20,6 @@ sealed interface EntriesAction {
 
 
     data object onSettingsClick: EntriesAction
-
-
-
 
 
 }
