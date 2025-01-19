@@ -16,6 +16,7 @@ kotlinSerialization = "1.7.3"
 core-splashscreen = "1.0.1"
 koin = "4.0.0"
 audiowaveform = "1.1.2"
+navigationCompose = "2.8.5"
 
 
 [libraries]
@@ -46,6 +47,7 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
 audiowaveform = { group = "com.github.lincollincol", name = "compose-audiowaveform", version.ref = "audiowaveform" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
