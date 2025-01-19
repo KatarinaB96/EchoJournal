@@ -19,9 +19,18 @@ class EntriesViewModel : ViewModel() {
             EntriesAction.onCancelRecording -> TODO()
             EntriesAction.onClickAddEntry -> TODO()
             EntriesAction.onClickAllMoods -> {
-                state = state.copy(isAllMoodsOpen = !state.isAllMoodsOpen)
+
+                state = state.copy(
+                    isAllMoodsOpen = !state.isAllMoodsOpen,
+                    isAllTopicsOpen = if (!state.isAllMoodsOpen) false else state.isAllTopicsOpen
+                )
             }
-            EntriesAction.onClickAllTopics -> TODO()
+            EntriesAction.onClickAllTopics -> {
+                state = state.copy(
+                    isAllTopicsOpen = !state.isAllTopicsOpen,
+                    isAllMoodsOpen = if (!state.isAllTopicsOpen) false else state.isAllMoodsOpen
+                )
+            }
             is EntriesAction.onPauseAudio -> TODO()
             EntriesAction.onPauseRecording -> TODO()
             is EntriesAction.onPlayAudio -> TODO()

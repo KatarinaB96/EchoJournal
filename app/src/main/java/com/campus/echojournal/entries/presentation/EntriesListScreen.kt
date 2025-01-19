@@ -18,11 +18,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -82,9 +79,7 @@ private fun EntriesListScreen(
         "Echo 1",
         "Echo 2",
     )
-    var isOpenAllMoods by remember {
-        mutableStateOf(false)
-    }
+
 
     val allMoodsList = listOf(
         Pair(R.drawable.mood_excited_active_on, "Excited"),
@@ -95,9 +90,7 @@ private fun EntriesListScreen(
 
         )
 
-    var isOpenAllTopics by remember {
-        mutableStateOf(false)
-    }
+
 
     val allTopicsList = listOf(
         Pair(R.drawable.ic_back, "Work"),
@@ -196,25 +189,18 @@ private fun EntriesListScreen(
                             showIcons = true,
                             title = "All Moods",
                             selectedList = selectedMoods,
-                            isActive = isOpenAllMoods,
+                            isActive = state.isAllMoodsOpen,
                             onClick = {
-                                isOpenAllMoods = !isOpenAllMoods
-
-                                if (isOpenAllMoods) {
-                                    isOpenAllTopics = false
-                                }
+                              onAction(EntriesAction.onClickAllMoods)
                             }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         EntriesListFilterChip(
                             showIcons = false,
                             selectedList = selectedTopics,
-                            isActive = isOpenAllTopics,
+                            isActive = state.isAllTopicsOpen,
                             onClick = {
-                                isOpenAllTopics = !isOpenAllTopics
-                                if (isOpenAllTopics) {
-                                    isOpenAllMoods = false
-                                }
+                                onAction(EntriesAction.onClickAllTopics)
                             },
                             title = "All Topics"
                         )
@@ -222,7 +208,7 @@ private fun EntriesListScreen(
                     Box {
                         SelectableFilterList(
                             itemList = allMoodsList,
-                            isVisible = isOpenAllMoods,
+                            isVisible = state.isAllMoodsOpen,
                             selectedItemList = selectedMoods.map {
                                 it.second
                             },
@@ -238,7 +224,7 @@ private fun EntriesListScreen(
                         )
                         SelectableFilterList(
                             itemList = allTopicsList,
-                            isVisible = isOpenAllTopics,
+                            isVisible = state.isAllTopicsOpen,
                             selectedItemList = selectedTopics.map {
                                 it.second
                             },
