@@ -18,8 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -35,6 +33,8 @@ import com.campus.echojournal.entries.presentation.components.EntriesListFilterC
 import com.campus.echojournal.entries.presentation.components.EntriesListTopAppBar
 import com.campus.echojournal.entries.presentation.components.NoEntries
 import com.campus.echojournal.entries.presentation.components.SelectableFilterList
+import com.campus.echojournal.entries.util.allMoodsList
+import com.campus.echojournal.entries.util.allTopicsList
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
@@ -81,30 +81,8 @@ private fun EntriesListScreen(
     )
 
 
-    val allMoodsList = listOf(
-        Pair(R.drawable.mood_excited_active_on, "Excited"),
-        Pair(R.drawable.mood_peaceful_active_on, "Peaceful"),
-        Pair(R.drawable.mood_neutral_active_on, "Neutral"),
-        Pair(R.drawable.mood_sad_active_on, "Sad"),
-        Pair(R.drawable.mood_stresses_active, "Stressed"),
-
-        )
 
 
-
-    val allTopicsList = listOf(
-        Pair(R.drawable.ic_back, "Work"),
-        Pair(R.drawable.ic_back, "Family"),
-        Pair(R.drawable.ic_back, "Friends"),
-        Pair(R.drawable.ic_back, "Love"),
-    )
-
-    val selectedMoods = remember {
-        mutableStateListOf<Pair<Int, String>>()
-    }
-    val selectedTopics = remember {
-        mutableStateListOf<Pair<Int, String>>()
-    }
 
     val scrollState = rememberScrollState()
 
@@ -183,12 +161,13 @@ private fun EntriesListScreen(
                             .padding(bottom = 8.dp, top = 16.dp, start = 16.dp)
                             .horizontalScroll(
                                 scrollState
-                            )
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         EntriesListFilterChip(
                             showIcons = true,
                             title = "All Moods",
-                            selectedList = selectedMoods,
+                            selectedList = state.selectedMoods,
                             isActive = state.isAllMoodsOpen,
                             onClick = {
                               onAction(EntriesAction.onClickAllMoods)
@@ -197,7 +176,7 @@ private fun EntriesListScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                         EntriesListFilterChip(
                             showIcons = false,
-                            selectedList = selectedTopics,
+                            selectedList = state.selectedTopics,
                             isActive = state.isAllTopicsOpen,
                             onClick = {
                                 onAction(EntriesAction.onClickAllTopics)
@@ -209,32 +188,21 @@ private fun EntriesListScreen(
                         SelectableFilterList(
                             itemList = allMoodsList,
                             isVisible = state.isAllMoodsOpen,
-                            selectedItemList = selectedMoods.map {
+                            selectedItemList = state.selectedMoods.map {
                                 it.second
                             },
                             onClick = { item ->
-                                if (!selectedMoods.removeAll { it.second == item }) {
-                                    val selectedMood = allMoodsList.find {
-                                        it.second == item
-                                    } ?: Pair(0, "")
-                                    selectedMoods.add(selectedMood)
-                                }
-
+                               onAction(EntriesAction.onSelectFilterMoods(item))
                             }
                         )
                         SelectableFilterList(
                             itemList = allTopicsList,
                             isVisible = state.isAllTopicsOpen,
-                            selectedItemList = selectedTopics.map {
+                            selectedItemList = state.selectedTopics.map {
                                 it.second
                             },
                             onClick = { item ->
-                                if (!selectedTopics.removeAll { it.second == item }) {
-                                    val selectedTopic = allTopicsList.find {
-                                        it.second == item
-                                    } ?: Pair(0, "")
-                                    selectedTopics.add(selectedTopic)
-                                }
+                                onAction(EntriesAction.onSelectFilterTopics(item))
 
                             }
                         )

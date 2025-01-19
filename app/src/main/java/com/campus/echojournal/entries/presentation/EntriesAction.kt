@@ -2,10 +2,10 @@ package com.campus.echojournal.entries.presentation
 
 sealed interface EntriesAction {
     data object onClickAllMoods: EntriesAction
-    data object onSelectFilterMoods: EntriesAction
+    data class onSelectFilterMoods(val mood: String): EntriesAction
 
     data object onClickAllTopics: EntriesAction
-    data object onSelectFilterTopics: EntriesAction
+    data class onSelectFilterTopics(val topic: String): EntriesAction
 
     data class onPlayAudio(val id: Int): EntriesAction
     data class onPauseAudio(val id: Int): EntriesAction
