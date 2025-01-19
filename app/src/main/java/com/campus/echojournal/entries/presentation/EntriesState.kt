@@ -1,4 +1,7 @@
 package com.campus.echojournal.entries.presentation
 
-class EntriesState {
-}
+
+data class EntriesState(
+    val isAllMoodsOpen: Boolean = false,
+    val isAllTopicsOpen : Boolean = false,
+    )

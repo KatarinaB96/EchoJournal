@@ -44,17 +44,25 @@ import com.campus.echojournal.ui.theme.GradientColor2
 
 @Composable
 fun EntriesListScreenRoot(
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
 
-    //viewModel: EntitiesListViewModel = org.koin.androidx.compose.koinViewModel()
+    viewModel: EntriesViewModel = org.koin.androidx.compose.koinViewModel()
 
 ) {
 
     EntriesListScreen(
-        onSettingsClick = onSettingsClick
-        //   state = viewModel.state,
+        state = viewModel.state,
+        onAction = { action ->
+            when (action) {
+                is EntriesAction.onSettingsClick -> {
+                    onSettingsClick()
+                }
+                else -> Unit
+            }
+            viewModel.onAction(action)
 
-        // onAction = viewModel::onAction
+        }
+
 
     )
 
@@ -64,11 +72,10 @@ fun EntriesListScreenRoot(
 
 private fun EntriesListScreen(
 
-    onSettingsClick: () -> Unit
 
-    //  state: EntitiesListState,
+    state: EntriesState,
 
-    //  onAction: (EntitiesListAction) -> Unit
+    onAction: (EntriesAction) -> Unit
 
 ) {
     val entriesList = listOf<String>(
@@ -124,7 +131,7 @@ private fun EntriesListScreen(
 
         topBar = {
             EntriesListTopAppBar(
-                onSettingsClick = onSettingsClick
+                onSettingsClick = { onAction(EntriesAction.onSettingsClick) }
             )
         },
 
@@ -269,11 +276,10 @@ private fun EntitiesListScreenPreview() {
 
         EntriesListScreen(
 
-            onSettingsClick = {}
 
-            //       state = EntitiesListState(),
+            state = EntriesState(),
 
-            //     onAction = {}
+            onAction = {}
 
         )
 
