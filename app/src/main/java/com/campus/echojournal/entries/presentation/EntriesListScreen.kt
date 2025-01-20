@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.campus.echojournal.entries.presentation
 
@@ -10,9 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.campus.echojournal.R
+import com.campus.echojournal.entries.presentation.components.BottomSheetContent
 import com.campus.echojournal.entries.presentation.components.EchoFloatingActionButton
 import com.campus.echojournal.entries.presentation.components.EntriesListDayView
 import com.campus.echojournal.entries.presentation.components.EntriesListFilterChip
@@ -71,6 +69,7 @@ fun EntriesListScreenRoot(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
 private fun EntriesListScreen(
@@ -124,31 +123,13 @@ private fun EntriesListScreen(
 
         if (state.isRecordAudioBottomSheetOpen) {
             ModalBottomSheet(
-
                 sheetState = sheetState,
                 onDismissRequest = {
                     onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
 
                 },
             ) {
-                Box(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.4f)
-                        .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(
-                                    GradientColor1.copy(alpha = 0.4F),
-                                    GradientColor2.copy(alpha = 0.4F)
-                                ),
-                                start = Offset(0f, 0f),
-                                end = Offset(0f, Float.POSITIVE_INFINITY)
-                            )
-                        )
-                ) {
-
-                }
+               BottomSheetContent()
             }
         }
 

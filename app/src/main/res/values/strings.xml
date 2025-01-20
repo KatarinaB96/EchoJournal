@@ -13,4 +13,5 @@
     <string name="no_entries">No Entries</string>
     <string name="start_recording_first_echo">Start recording your first Echo</string>
     <string name="add_an_echo">Add an Echo</string>
+    <string name="recording_your_memories">Recording your memories…</string>
 </resources>
