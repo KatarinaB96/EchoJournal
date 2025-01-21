@@ -38,3 +38,6 @@ val SurfaceColor = Color(0xFF475D92)
 
 val LineColor = Color(0xFFDFE2E8)
 
+val AnimationGradientColor1 = Color(0xFF3982F6)
+val AnimationGradientColor2 = Color(0xFF0E5FE0)
+
