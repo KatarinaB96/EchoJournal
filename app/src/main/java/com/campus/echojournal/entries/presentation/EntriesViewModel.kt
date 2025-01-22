@@ -19,14 +19,22 @@ class EntriesViewModel : ViewModel() {
 
     fun onAction(action: EntriesAction) {
         when (action) {
-            EntriesAction.onCancelRecording -> TODO()
+            EntriesAction.onStartRecording -> {
+                state = state.copy(
+                    isRecording = true
+                )
+            }
+            EntriesAction.onCancelRecording -> {
+                state = state.copy(
+                    isRecording = false,
+                )
+            }
             EntriesAction.onClickAddEntry -> {
                 state = state.copy(
                     isRecordAudioBottomSheetOpen = true
                 )
             }
             EntriesAction.onClickAllMoods -> {
-
                 state = state.copy(
                     isAllMoodsOpen = !state.isAllMoodsOpen,
                     isAllTopicsOpen = if (!state.isAllMoodsOpen) false else state.isAllTopicsOpen
@@ -41,10 +49,27 @@ class EntriesViewModel : ViewModel() {
             }
 
             is EntriesAction.onPauseAudio -> TODO()
-            EntriesAction.onPauseRecording -> TODO()
+
+            EntriesAction.onPauseRecording -> {
+                state = state.copy(
+                    isRecording = false
+                )
+            }
+
             is EntriesAction.onPlayAudio -> TODO()
-            EntriesAction.onResumeRecording -> TODO()
-            EntriesAction.onSaveRecording -> TODO()
+
+            EntriesAction.onResumeRecording -> {
+                state = state.copy(
+                    isRecording = true
+                )
+            }
+
+            EntriesAction.onSaveRecording -> {
+                state = state.copy(
+                    isRecording = false,
+                )
+            }
+
             is EntriesAction.onSelectFilterMoods -> {
                 val item = action.mood
                 val selectedMoods = state.selectedMoods.toMutableList()

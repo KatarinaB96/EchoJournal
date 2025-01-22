@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -44,6 +45,7 @@ import com.campus.echojournal.entries.util.allTopicsList
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
+import kotlinx.coroutines.launch
 
 @Composable
 fun EntriesListScreenRoot(
@@ -94,7 +96,7 @@ private fun EntriesListScreen(
 
     val scrollState = rememberScrollState()
 
-
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         floatingActionButton = {
@@ -129,7 +131,31 @@ private fun EntriesListScreen(
 
                 },
             ) {
-               BottomSheetContent()
+               BottomSheetContent(
+                   onCancelRecording = {
+                       onAction(EntriesAction.onCancelRecording)
+                   },
+                     onStartRecording = {
+                          onAction(EntriesAction.onStartRecording)
+                     },
+                        onPauseRecording = {
+                            onAction(EntriesAction.onPauseRecording)
+                        },
+                        onResumeRecording = {
+                            onAction(EntriesAction.onResumeRecording)
+                        },
+                        onSaveRecording = {
+                            onAction(EntriesAction.onSaveRecording)
+                        },
+                   onCloseBottomSheet = {
+                       coroutineScope.launch {
+                           sheetState.hide()
+                           onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
+                       }
+
+                   },
+                   isRecording = state.isRecording
+               )
             }
         }
 
@@ -166,13 +192,9 @@ private fun EntriesListScreen(
                             top = 56.dp
                         )
                 ) {
-
-
                     items(3) { it ->
                         EntriesListDayView()
-
                     }
-
                 }
 
                 Column(
@@ -235,8 +257,6 @@ private fun EntriesListScreen(
                 }
 
             }
-
-
         }
 
 

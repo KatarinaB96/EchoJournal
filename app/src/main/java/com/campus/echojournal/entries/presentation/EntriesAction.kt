@@ -13,6 +13,7 @@ sealed interface EntriesAction {
     data object onClickAddEntry: EntriesAction
     data object OnDismissRecordAudioBottomSheet: EntriesAction
 
+    data object onStartRecording: EntriesAction
     data object onCancelRecording: EntriesAction
     data object onPauseRecording: EntriesAction
     data object onResumeRecording: EntriesAction

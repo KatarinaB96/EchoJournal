@@ -16,9 +16,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,12 +34,12 @@ import com.campus.echojournal.ui.theme.PrimaryContainer
 fun BottomSheetBigIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isRecording : Boolean,
     content: @Composable () -> Unit
 ) {
-    var isAnimating by remember { mutableStateOf(false) }
 
     val firstRingScale by animateFloatAsState(
-        targetValue = if (isAnimating) 2f else 1f,
+        targetValue = if (isRecording) 2f else 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(2000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
@@ -51,7 +48,7 @@ fun BottomSheetBigIconButton(
     )
 
     val secondRingScale by animateFloatAsState(
-        targetValue = if (isAnimating) 1.5f else 1f,
+        targetValue = if (isRecording) 1.5f else 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(2000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
@@ -64,7 +61,7 @@ fun BottomSheetBigIconButton(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        if (isAnimating) {
+        if (isRecording) {
             Box(
                 modifier = Modifier
                     .size(128.dp)
@@ -88,7 +85,6 @@ fun BottomSheetBigIconButton(
 
         IconButton(
             onClick = {
-                isAnimating = !isAnimating
                 onClick()
             },
             modifier = modifier
@@ -113,7 +109,8 @@ private fun BottomSheetBigIconButtonPreview() {
     EchoJournalTheme {
         BottomSheetBigIconButton(
             onClick = { },
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(48.dp),
+            isRecording = false
         ) {
             Icon(
                 imageVector = Icons.Default.Check,

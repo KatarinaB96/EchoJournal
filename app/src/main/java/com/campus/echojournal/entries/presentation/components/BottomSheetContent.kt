@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +28,21 @@ import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor2
 
 @Composable
-fun BottomSheetContent(modifier: Modifier = Modifier) {
+fun BottomSheetContent(
+    onCancelRecording: () -> Unit,
+    onSaveRecording: () -> Unit,
+    onPauseRecording: () -> Unit,
+    onStartRecording: () -> Unit,
+    onResumeRecording: () -> Unit,
+    onCloseBottomSheet: () -> Unit,
+    isRecording: Boolean,
+    modifier: Modifier = Modifier
+) {
+
+    LaunchedEffect(Unit) {
+        onStartRecording()
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -61,7 +76,10 @@ fun BottomSheetContent(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             BottomSheetIconButton(
-                onClick = {},
+                onClick = {
+                    onCancelRecording()
+                    onCloseBottomSheet()
+                },
                 containerColor = MaterialTheme.colorScheme.errorContainer,
                 icon = {
                     Image(
@@ -73,23 +91,38 @@ fun BottomSheetContent(modifier: Modifier = Modifier) {
                 size = 48.dp
             )
             BottomSheetBigIconButton(
-                onClick = { /* handle click */ },
+                onClick = {
+                    if (isRecording) {
+                        onSaveRecording()
+                        onCloseBottomSheet()
+                    } else {
+                        onResumeRecording()
+                    }
+                },
+                isRecording = isRecording,
                 modifier = Modifier.size(72.dp)
             ) {
 
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_check),
+                    painter = painterResource(id = if (isRecording) R.drawable.ic_check else R.drawable.ic_mic),
                     contentDescription = "Save Recording",
                     tint = Color.White,
                     modifier = Modifier.size(21.dp)
                 )
             }
             BottomSheetIconButton(
-                onClick = {},
+                onClick = {
+                    if (isRecording) {
+                        onPauseRecording()
+                    } else {
+                        onSaveRecording()
+                        onCloseBottomSheet()
+                    }
+                },
                 containerColor = GradientColor2,
                 icon = {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_pause),
+                        painter = painterResource(id = if (isRecording) R.drawable.ic_pause else R.drawable.ic_check),
                         contentDescription = "Pause Recording",
                         modifier = Modifier.size(14.dp)
                     )
@@ -107,6 +140,13 @@ private fun BottomSheetContentPreview() {
     EchoJournalTheme {
         Surface {
             BottomSheetContent(
+                isRecording = false,
+                onCancelRecording = {},
+                onSaveRecording = {},
+                onPauseRecording = {},
+                onStartRecording = {},
+                onResumeRecording = {},
+                onCloseBottomSheet = {},
                 modifier = Modifier.height(360.dp)
             )
         }
