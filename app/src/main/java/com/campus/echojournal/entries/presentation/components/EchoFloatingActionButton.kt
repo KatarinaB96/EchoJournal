@@ -12,8 +12,9 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -77,15 +78,17 @@ fun EchoFloatingActionButton(
         ),
         label = "secondRing"
     )
-    var offsetX by remember { mutableStateOf(0f) } // X ekseni kayması
+    var offsetX by remember { mutableStateOf(0f) }
 
     var globalPositionOfCancelButton by remember { mutableStateOf(IntOffset(0, 0)) }
     var globalPositionOfFAB by remember { mutableStateOf(IntOffset(0, 0)) }
     var initialPositionOfFAB by remember { mutableStateOf(IntOffset(0, 0)) }
+    val interactionSource = remember { MutableInteractionSource() }
+
     Row(
         modifier = Modifier.fillMaxWidth(0.4f),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = if(isAnimating) Arrangement.SpaceBetween else Arrangement.End
+        horizontalArrangement = if (isAnimating) Arrangement.SpaceBetween else Arrangement.End
     ) {
         AnimatedVisibility(
             visible = isAnimating,
@@ -102,9 +105,8 @@ fun EchoFloatingActionButton(
                         modifier = Modifier.size(14.dp)
                     )
                 },
-                size = if(abs( globalPositionOfCancelButton.x - globalPositionOfFAB.x) <= 50) 98.dp else 48.dp ,
+                size = if (abs(globalPositionOfCancelButton.x - globalPositionOfFAB.x) <= 50) 98.dp else 48.dp,
                 modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
-                    // Get the global position
                     val position = layoutCoordinates.localToWindow(Offset.Zero)
                     globalPositionOfCancelButton = IntOffset(position.x.toInt(), position.y.toInt())
                 }
@@ -116,41 +118,44 @@ fun EchoFloatingActionButton(
                 .offset {
                     IntOffset(
                         offsetX.roundToInt(),
-                      0
+                        0
                     )
-                }
-               ,
+                },
             contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .scale(firstRingScale)
-                    .background(
-                        brush = Brush.linearGradient(
-                            listOf(
-                                AnimationGradientColor1.copy(alpha = 0.1f),
-                                AnimationGradientColor2.copy(alpha = 0.1f),
-                            )
-                        ),
-                        shape = CircleShape
-                    )
+            if (isAnimating) {
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .scale(firstRingScale)
+                        .background(
+                            brush = Brush.linearGradient(
+                                listOf(
+                                    AnimationGradientColor1.copy(alpha = 0.1f),
+                                    AnimationGradientColor2.copy(alpha = 0.1f),
+                                )
+                            ),
+                            shape = CircleShape
+                        )
 
-            )
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .scale(secondRingScale)
-                    .background(
-                        brush = Brush.linearGradient(
-                            listOf(
-                                AnimationGradientColor1.copy(alpha = 0.2f),
-                                AnimationGradientColor2.copy(alpha = 0.2f),
-                            )
-                        ),
-                        shape = CircleShape
-                    )
-            )
+                )
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .scale(secondRingScale)
+                        .background(
+                            brush = Brush.linearGradient(
+                                listOf(
+                                    AnimationGradientColor1.copy(alpha = 0.2f),
+                                    AnimationGradientColor2.copy(alpha = 0.2f),
+                                )
+                            ),
+                            shape = CircleShape
+                        )
+                )
+            }
+
+
 
             Box(
                 modifier = modifier
@@ -169,55 +174,53 @@ fun EchoFloatingActionButton(
                                 PrimaryContainer
                             )
                         )
-                    ).onGloballyPositioned { layoutCoordinates ->
+                    )
+
+                    .onGloballyPositioned { layoutCoordinates ->
                         // Get the global position
                         val position = layoutCoordinates.localToWindow(Offset.Zero)
                         globalPositionOfFAB = IntOffset(position.x.toInt(), position.y.toInt())
                     }
+
+
                     .pointerInput(Unit) {
                         detectDragGesturesAfterLongPress(
                             onDragStart = {
                                 initialPositionOfFAB = globalPositionOfFAB
-                                // Drag işlemi başladığında tetiklenecek işlem
                                 isAnimating = true
-                                println("Drag işlemi başladı!")
+                            },
+                            onDragCancel =
+                            {
+                                isAnimating = false
                             },
                             onDragEnd = {
-                                // Drag işlemi bittiğinde tetiklenecek işlem
-                                println(globalPositionOfFAB)
-                                println(globalPositionOfCancelButton)
-                                if(abs( globalPositionOfCancelButton.x - globalPositionOfFAB.x) <= 50){
-                                    println("Drag işlemi başarılı!")
 
+                                if (abs(globalPositionOfCancelButton.x - globalPositionOfFAB.x) <= 50) {
+                                    // Cancel recording
+                                    isAnimating = false
+                                } else {
+                                    isAnimating = false
                                 }
                                 offsetX = 0f
                             }, onDrag = { change, dragAmount ->
 
-                                println(dragAmount.x)
 
-                                if( globalPositionOfCancelButton.x - globalPositionOfFAB.x < dragAmount.x && (globalPositionOfFAB.x - initialPositionOfFAB.x <= 0)){
-                                    change.consume() // Gesture işlemini tüket
+                                if (globalPositionOfCancelButton.x - globalPositionOfFAB.x < dragAmount.x && (globalPositionOfFAB.x - initialPositionOfFAB.x <= 0)) {
+                                    change.consume()
 
                                     offsetX += dragAmount.x
                                 }
-
-
-
                             }
                         )
-
-                    }.pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                onClick()
-                            }
-                        )
-                    },
+                    }
+                    .clickable(
+                        enabled = !isAnimating
+                    ) { onClick() },
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(
-                        id = R.drawable.ic_mic
+                        id = if (isAnimating) R.drawable.ic_mic else R.drawable.ic_add
                     ),
                     contentDescription = stringResource(R.string.recording),
                 )
