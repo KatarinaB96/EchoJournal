@@ -207,7 +207,17 @@ private fun EntriesListScreen(
                         )
                 ) {
                     items(3) { it ->
-                        EntriesListDayView()
+                        EntriesListDayView(
+                            onClickPlay = {
+                                onAction(EntriesAction.onPlayAudio(it))
+                            },
+                            onClickPause = {
+                                onAction(EntriesAction.onPauseAudio(it))
+                            },
+                            onClickResume = {
+                                onAction(EntriesAction.onResumeAudio(it))
+                            },
+                        )
                     }
                 }
 

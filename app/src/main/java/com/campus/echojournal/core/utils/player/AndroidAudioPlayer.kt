@@ -9,14 +9,13 @@ class AndroidAudioPlayer(
     private val context: Context
 ) : AudioPlayer {
 
-    private var player : MediaPlayer? = null
+    private var player: MediaPlayer? = null
 
     override fun playFile(file: File) {
-    MediaPlayer.create(context, file.toUri()).apply {
-        player = this
-        start()
-
-    }
+        MediaPlayer.create(context, file.toUri()).apply {
+            player = this
+            start()
+        }
     }
 
     override fun stop() {
@@ -24,4 +23,17 @@ class AndroidAudioPlayer(
         player?.release()
         player = null
     }
+
+    override fun pause() {
+        player?.pause()
+    }
+
+    override fun resume() {
+        player?.let {
+            if (!it.isPlaying) {
+                it.start()
+            }
+        }
+    }
+
 }

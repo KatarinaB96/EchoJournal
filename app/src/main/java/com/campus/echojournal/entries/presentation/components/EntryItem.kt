@@ -32,6 +32,9 @@ import com.campus.echojournal.ui.theme.LineColor
 
 @Composable
 fun EntryItem(
+    onClickPlay : (Int) -> Unit = {},
+    onClickPause : (Int) -> Unit = {},
+    onClickResume : (Int) -> Unit = {},
     index: Int = 0,
     modifier: Modifier = Modifier
 ) {
@@ -85,7 +88,12 @@ fun EntryItem(
                     Text("19:42")
 
                 }
-                AudioWave()
+                AudioWave(
+                    onClickPlay = onClickPlay,
+                    onClickPause = onClickPause,
+                    onClickResume = onClickResume,
+                    index = index
+                )
                 Text(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed tdeades,Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed ",
                     overflow = TextOverflow.Ellipsis,

@@ -11,7 +11,12 @@ import androidx.compose.ui.unit.sp
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 
 @Composable
-fun EntriesListDayView(modifier: Modifier = Modifier) {
+fun EntriesListDayView(
+    onClickPlay: (Int) -> Unit = {},
+    onClickPause: (Int) -> Unit = {},
+    onClickResume: (Int) -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     Column {
 
         Text(
@@ -21,6 +26,9 @@ fun EntriesListDayView(modifier: Modifier = Modifier) {
         )
         repeat(3) {
             EntryItem(
+                onClickPlay = onClickPlay,
+                onClickPause = onClickPause,
+                onClickResume = onClickResume,
                 index = it
             )
         }

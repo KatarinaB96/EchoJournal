@@ -73,7 +73,12 @@ class EntriesViewModel(
                 )
             }
 
-            is EntriesAction.onPauseAudio -> TODO()
+            is EntriesAction.onPauseAudio ->{
+                player.pause()
+                state = state.copy(
+                    isPlaying = false
+                )
+            }
 
             EntriesAction.onPauseRecording -> {
                 state = state.copy(
@@ -82,7 +87,18 @@ class EntriesViewModel(
                 recorder.pause()
             }
 
-            is EntriesAction.onPlayAudio -> TODO()
+            is EntriesAction.onPlayAudio -> {
+                player.playFile(audioFile!!)
+                state = state.copy(
+                    isPlaying = true
+                )
+            }
+            is EntriesAction.onResumeAudio ->{
+                player.resume()
+                state = state.copy(
+                    isPlaying = true
+                )
+            }
 
             EntriesAction.onResumeRecording -> {
                 state = state.copy(

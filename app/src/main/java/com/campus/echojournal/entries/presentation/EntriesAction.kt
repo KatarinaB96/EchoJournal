@@ -9,6 +9,7 @@ sealed interface EntriesAction {
 
     data class onPlayAudio(val id: Int): EntriesAction
     data class onPauseAudio(val id: Int): EntriesAction
+    data class onResumeAudio(val id: Int): EntriesAction
 
     data object onClickAddEntry: EntriesAction
     data object OnDismissRecordAudioBottomSheet: EntriesAction

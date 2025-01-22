@@ -8,4 +8,5 @@ data class EntriesState(
     val selectedTopics: List<Pair<Int, String>> = emptyList(),
     val isRecordAudioBottomSheetOpen : Boolean = false,
     val isRecording : Boolean = false,
+    val isPlaying : Boolean = false,
     )
