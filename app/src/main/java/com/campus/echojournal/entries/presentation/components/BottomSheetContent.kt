@@ -15,6 +15,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.campus.echojournal.R
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor2
+import kotlinx.coroutines.delay
+import java.util.Locale
 
 @Composable
 fun BottomSheetContent(
@@ -38,16 +44,29 @@ fun BottomSheetContent(
     isRecording: Boolean,
     modifier: Modifier = Modifier
 ) {
+    var counter by remember { mutableStateOf(0) }
+
 
     LaunchedEffect(Unit) {
         onStartRecording()
     }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000L)
+            counter++
+        }
+    }
 
+    val formattedTime = remember(counter) {
+        val hours = counter / 3600
+        val minutes = (counter % 3600) / 60
+        val seconds = counter % 60
+        String.format(Locale.getDefault(),"%02d:%02d:%02d", hours, minutes, seconds)
+    }
     Box(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(0.4f)
-
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -60,7 +79,7 @@ fun BottomSheetContent(
                 style = MaterialTheme.typography.headlineMedium
             )
             Text(
-                text = "01:30:45",
+                text = formattedTime,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodySmall
 

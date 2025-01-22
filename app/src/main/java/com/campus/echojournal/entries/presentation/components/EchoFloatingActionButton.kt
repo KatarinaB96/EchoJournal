@@ -57,12 +57,15 @@ import kotlin.math.roundToInt
 fun EchoFloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isRecording: Boolean,
+    onStartRecording: () -> Unit,
+    onCancelRecording: () -> Unit,
+    onSaveRecording: () -> Unit,
     icon: @Composable () -> Unit
 ) {
-    var isAnimating by remember { mutableStateOf(false) }
 
     val firstRingScale by animateFloatAsState(
-        targetValue = if (isAnimating) 1.5f else 1f,
+        targetValue = if (isRecording) 1.5f else 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(2000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
@@ -71,7 +74,7 @@ fun EchoFloatingActionButton(
     )
 
     val secondRingScale by animateFloatAsState(
-        targetValue = if (isAnimating) 1.5f else 1f,
+        targetValue = if (isRecording) 1.5f else 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(2000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
@@ -88,10 +91,10 @@ fun EchoFloatingActionButton(
     Row(
         modifier = Modifier.fillMaxWidth(0.4f),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = if (isAnimating) Arrangement.SpaceBetween else Arrangement.End
+        horizontalArrangement = if (isRecording) Arrangement.SpaceBetween else Arrangement.End
     ) {
         AnimatedVisibility(
-            visible = isAnimating,
+            visible = isRecording,
             enter = fadeIn() + scaleIn(),
             exit = fadeOut() + scaleOut()
         ) {
@@ -123,7 +126,7 @@ fun EchoFloatingActionButton(
                 },
             contentAlignment = Alignment.Center
         ) {
-            if (isAnimating) {
+            if (isRecording) {
                 Box(
                     modifier = Modifier
                         .size(64.dp)
@@ -187,19 +190,20 @@ fun EchoFloatingActionButton(
                         detectDragGesturesAfterLongPress(
                             onDragStart = {
                                 initialPositionOfFAB = globalPositionOfFAB
-                                isAnimating = true
+                                onStartRecording()
                             },
                             onDragCancel =
                             {
-                                isAnimating = false
+
+                                onSaveRecording()
                             },
                             onDragEnd = {
 
                                 if (abs(globalPositionOfCancelButton.x - globalPositionOfFAB.x) <= 50) {
                                     // Cancel recording
-                                    isAnimating = false
+                                    onCancelRecording()
                                 } else {
-                                    isAnimating = false
+                                    onSaveRecording()
                                 }
                                 offsetX = 0f
                             }, onDrag = { change, dragAmount ->
@@ -214,13 +218,13 @@ fun EchoFloatingActionButton(
                         )
                     }
                     .clickable(
-                        enabled = !isAnimating
+                        enabled = !isRecording
                     ) { onClick() },
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(
-                        id = if (isAnimating) R.drawable.ic_mic else R.drawable.ic_add
+                        id = if (isRecording) R.drawable.ic_mic else R.drawable.ic_add
                     ),
                     contentDescription = stringResource(R.string.recording),
                 )
@@ -244,6 +248,10 @@ private fun EchoFloatingActionButtonPreview() {
         ) {
             EchoFloatingActionButton(
                 onClick = {},
+                isRecording = false,
+                onStartRecording = {},
+                onCancelRecording = {},
+                onSaveRecording = {},
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add),

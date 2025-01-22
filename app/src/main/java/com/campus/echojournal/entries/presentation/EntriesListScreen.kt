@@ -1,4 +1,3 @@
-
 package com.campus.echojournal.entries.presentation
 
 
@@ -104,11 +103,25 @@ private fun EntriesListScreen(
                 onClick = {
                     onAction(EntriesAction.onClickAddEntry)
                 },
+                onCancelRecording = {
+                    onAction(EntriesAction.onCancelRecording)
+                },
+                onStartRecording = {
+                    onAction(EntriesAction.onStartRecording)
+                },
+
+                onSaveRecording = {
+                    onAction(EntriesAction.onSaveRecording)
+                },
+
+                isRecording = state.isRecording,
+
                 icon = {
                     Image(
                         painter = painterResource(id = R.drawable.ic_add),
                         contentDescription = stringResource(R.string.add_an_echo),
                     )
+
                 }
             )
         },
@@ -127,35 +140,36 @@ private fun EntriesListScreen(
             ModalBottomSheet(
                 sheetState = sheetState,
                 onDismissRequest = {
+                    onAction(EntriesAction.onCancelRecording)
                     onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
 
                 },
             ) {
-               BottomSheetContent(
-                   onCancelRecording = {
-                       onAction(EntriesAction.onCancelRecording)
-                   },
-                     onStartRecording = {
-                          onAction(EntriesAction.onStartRecording)
-                     },
-                        onPauseRecording = {
-                            onAction(EntriesAction.onPauseRecording)
-                        },
-                        onResumeRecording = {
-                            onAction(EntriesAction.onResumeRecording)
-                        },
-                        onSaveRecording = {
-                            onAction(EntriesAction.onSaveRecording)
-                        },
-                   onCloseBottomSheet = {
-                       coroutineScope.launch {
-                           sheetState.hide()
-                           onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
-                       }
+                BottomSheetContent(
+                    onCancelRecording = {
+                        onAction(EntriesAction.onCancelRecording)
+                    },
+                    onStartRecording = {
+                        onAction(EntriesAction.onStartRecording)
+                    },
+                    onPauseRecording = {
+                        onAction(EntriesAction.onPauseRecording)
+                    },
+                    onResumeRecording = {
+                        onAction(EntriesAction.onResumeRecording)
+                    },
+                    onSaveRecording = {
+                        onAction(EntriesAction.onSaveRecording)
+                    },
+                    onCloseBottomSheet = {
+                        coroutineScope.launch {
+                            sheetState.hide()
+                            onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
+                        }
 
-                   },
-                   isRecording = state.isRecording
-               )
+                    },
+                    isRecording = state.isRecording
+                )
             }
         }
 
