@@ -1,11 +1,13 @@
 package com.campus.echojournal
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +26,12 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                Manifest.permission.RECORD_AUDIO
+            ), 0
+        )
+
         setContent {
             EchoJournalTheme {
                 val navController = rememberNavController()

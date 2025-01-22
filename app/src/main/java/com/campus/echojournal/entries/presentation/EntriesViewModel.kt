@@ -1,20 +1,36 @@
 package com.campus.echojournal.entries.presentation
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.campus.echojournal.R
+import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
+import com.campus.echojournal.core.utils.recorder.AndroidAudioRecorder
 import com.campus.echojournal.entries.util.allMoodsList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import java.io.File
 
-class EntriesViewModel : ViewModel() {
+class EntriesViewModel(
+    private val application: Application
+) : ViewModel() {
     var state by mutableStateOf(EntriesState())
         private set
 
     private val eventChannel = Channel<EntriesEvent>()
     val events = eventChannel.receiveAsFlow()
+
+    private val recorder by lazy {
+        AndroidAudioRecorder(application)
+    }
+
+    private val player by lazy {
+        AndroidAudioPlayer(application)
+    }
+
+    private var audioFile: File? = null
 
 
     fun onAction(action: EntriesAction) {
@@ -23,17 +39,26 @@ class EntriesViewModel : ViewModel() {
                 state = state.copy(
                     isRecording = true
                 )
+                File(application.cacheDir, "audio_${System.currentTimeMillis()}.mp3").also {
+                    recorder.start(it)
+                    audioFile = it
+                }
+
             }
+
             EntriesAction.onCancelRecording -> {
                 state = state.copy(
                     isRecording = false,
                 )
+                recorder.cancel()
             }
+
             EntriesAction.onClickAddEntry -> {
                 state = state.copy(
                     isRecordAudioBottomSheetOpen = true
                 )
             }
+
             EntriesAction.onClickAllMoods -> {
                 state = state.copy(
                     isAllMoodsOpen = !state.isAllMoodsOpen,
@@ -54,6 +79,7 @@ class EntriesViewModel : ViewModel() {
                 state = state.copy(
                     isRecording = false
                 )
+                recorder.pause()
             }
 
             is EntriesAction.onPlayAudio -> TODO()
@@ -62,12 +88,14 @@ class EntriesViewModel : ViewModel() {
                 state = state.copy(
                     isRecording = true
                 )
+                recorder.resume()
             }
 
             EntriesAction.onSaveRecording -> {
                 state = state.copy(
                     isRecording = false,
                 )
+                recorder.stop()
             }
 
             is EntriesAction.onSelectFilterMoods -> {
@@ -100,6 +128,7 @@ class EntriesViewModel : ViewModel() {
                     isRecordAudioBottomSheetOpen = false
                 )
             }
+
             else -> Unit
         }
 

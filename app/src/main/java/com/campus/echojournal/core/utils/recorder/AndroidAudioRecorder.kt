@@ -10,6 +10,8 @@ import java.io.FileOutputStream
 class AndroidAudioRecorder(private val context: Context) : AudioRecorder {
 
     private var recorder: MediaRecorder? = null
+    private var outputFile: File? = null
+
 
     private fun createRecorder(): MediaRecorder {
 
@@ -22,6 +24,7 @@ class AndroidAudioRecorder(private val context: Context) : AudioRecorder {
     }
 
     override fun start(outputFile: File) {
+        this.outputFile = outputFile
         createRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -40,6 +43,38 @@ class AndroidAudioRecorder(private val context: Context) : AudioRecorder {
         recorder?.reset()
         recorder = null
 
+    }
+
+    override fun pause() {
+        recorder?.pause()
+    }
+
+    override fun resume() {
+        recorder?.resume()
 
     }
+
+    override fun cancel() {
+        try {
+            recorder?.apply {
+                stop()
+                reset()
+                release()
+            }
+            recorder = null
+
+            outputFile?.let {
+                if (it.exists()) {
+                    it.delete()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            recorder = null
+            outputFile = null
+        }
+    }
+
+
 }
