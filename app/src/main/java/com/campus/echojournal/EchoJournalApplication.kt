@@ -2,6 +2,7 @@ package com.campus.echojournal
 
 import android.app.Application
 import com.campus.echojournal.core.di.coreModule
+import com.campus.echojournal.entries.presentation.entriesModule
 import com.campus.echojournal.settings.di.settingsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -18,7 +19,8 @@ class EchoJournalApplication : Application() {
             // Load modules
             modules(
                 coreModule,
-                settingsModule
+                settingsModule,
+                entriesModule
             )
         }
     }
