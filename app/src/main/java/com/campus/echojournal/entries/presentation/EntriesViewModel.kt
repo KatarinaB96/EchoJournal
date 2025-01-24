@@ -5,17 +5,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.campus.echojournal.core.domain.JournalRepository
 import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.core.utils.recorder.AndroidAudioRecorder
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import java.io.File
 
 class EntriesViewModel(
-    private val application: Application
+    private val application: Application,
+    private val repository: JournalRepository,
 ) : ViewModel() {
     var state by mutableStateOf(EntriesState())
         private set
+
+    init {
+        repository.getAllEntriesWithTopics().onEach { entries ->
+            state = state.copy(entries = entries, filteredEntries = entries)
+        }.launchIn(viewModelScope)
+    }
+
 
     private val eventChannel = Channel<EntriesEvent>()
     val events = eventChannel.receiveAsFlow()

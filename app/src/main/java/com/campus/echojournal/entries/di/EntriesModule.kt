@@ -9,7 +9,7 @@ import org.koin.dsl.module
 val entriesModule = module {
     viewModel { NewEntryViewModel(get(), get()) }
     viewModel{
-        EntriesViewModel(androidApplication())
+        EntriesViewModel(androidApplication(), get())
     }
 
 }
