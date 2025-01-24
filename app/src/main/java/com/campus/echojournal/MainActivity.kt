@@ -7,8 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
@@ -16,18 +14,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.campus.echojournal.core.Route
-import com.campus.echojournal.entries.presentation.EntriesListScreenRoot
+import com.campus.echojournal.core.utils.Route
 import com.campus.echojournal.entries.presentation.NewEntryScreenRoot
 import com.campus.echojournal.entries.presentation.NewEntryViewModel
 import com.campus.echojournal.settings.presentation.SettingsScreenRoot
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
-import com.campus.echojournal.core.utils.Route
-import com.campus.echojournal.entries.presentation.EntriesListScreenRoot
-import com.campus.echojournal.settings.presentation.SettingsScreen
 import com.campus.echojournal.settings.presentation.SettingsViewModel
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import org.koin.androidx.compose.koinViewModel
@@ -48,29 +38,29 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Route.EchoJournalGraph
+                    startDestination = Route.EchoGraph
                 ) {
-                    navigation<Route.EchoJournalGraph>(startDestination = Route.EntryList) {
-                        composable<Route.EntryList>(
+                    navigation<Route.EchoGraph>(startDestination = Route.HomeScreen) {
+                        composable<Route.HomeScreen>(
                             exitTransition = { slideOutHorizontally() },
                             popEnterTransition = {
                                 slideInHorizontally()
                             }
                         ) {
                             //                            val viewModel = koinViewModel<EntriesViewModel>()
-                            EntriesListScreenRoot(
-                                //                                viewModel = viewModel,
-                            )
+                            //                            EntriesListScreenRoot(
+                            //                                //                                viewModel = viewModel,
+                            //                            )
                         }
 
-                        composable<Route.AddEntry>(
+                        composable<Route.AddEntryScreen>(
                             exitTransition = { slideOutHorizontally() },
                             popEnterTransition = {
                                 slideInHorizontally()
                             }
                         ) {
                             //TODO: send recording
-                            val args = it.toRoute<Route.AddEntry>()
+                            val args = it.toRoute<Route.AddEntryScreen>()
                             val viewModel = koinViewModel<NewEntryViewModel>()
                             NewEntryScreenRoot(
                                 viewModel = viewModel,
@@ -78,13 +68,13 @@ class MainActivity : ComponentActivity() {
                                     if (navController.previousBackStackEntry != null) {
                                         navController.navigateUp()
                                     } else {
-                                        navController.navigate(Route.EntryList)
+                                        navController.navigate(Route.HomeScreen)
                                     }
                                 },
                                 //                                path = args.path
                             )
                         }
-                        composable<Route.Settings>(
+                        composable<Route.SettingsScreen>(
                             exitTransition = { slideOutHorizontally() },
                             popEnterTransition = {
                                 slideInHorizontally()
@@ -96,7 +86,7 @@ class MainActivity : ComponentActivity() {
                                     if (navController.previousBackStackEntry != null) {
                                         navController.navigateUp()
                                     } else {
-                                        navController.navigate(Route.EntryList)
+                                        navController.navigate(Route.HomeScreen)
                                     }
                                 }
                             )
@@ -116,40 +106,6 @@ class MainActivity : ComponentActivity() {
                     },
                     //                                path = args.path
                 )
-                val navController = rememberNavController()
-                NavHost(
-                    navController = navController,
-                    startDestination = Route.EchoGraph
-                ) {
-                    navigation<Route.EchoGraph>(
-                        startDestination = Route.HomeScreen
-                    ) {
-                        composable<Route.HomeScreen>(
-                            exitTransition = { slideOutHorizontally() },
-                            popEnterTransition = {
-                                slideInHorizontally()
-                            }
-                        ) {
-                            EntriesListScreenRoot(
-                                onSettingsClick = {
-                                    navController.navigate(Route.SettingsScreen)
-                                }
-                            )
-                        }
-                        composable<Route.SettingsScreen>(
-                            exitTransition = { slideOutHorizontally() },
-                            popEnterTransition = {
-                                slideInHorizontally()
-                            }
-                        ) {
-                            val viewModel = koinViewModel<SettingsViewModel>()
-                            SettingsScreen(viewModel)
-                        }
-                    }
-
-
-                }
-
 
             }
         }

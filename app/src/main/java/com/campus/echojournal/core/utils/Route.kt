@@ -4,15 +4,15 @@ import kotlinx.serialization.Serializable
 
 sealed interface Route {
     @Serializable
-    data object EchoGraph: Route
-
-    @Serializable
-    data object SettingsScreen : Route
+    data object EchoGraph : Route
 
     @Serializable
     data object HomeScreen : Route
 
     @Serializable
-    data object AddEchoScreen : Route
+    data object AddEntryScreen : Route
+
+    @Serializable
+    data object SettingsScreen : Route
 
 }
