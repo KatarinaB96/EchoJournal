@@ -22,10 +22,9 @@ sealed interface EntriesAction {
     data object onResumeRecording: EntriesAction
     data object onSaveRecording: EntriesAction
 
-
     data object onSettingsClick: EntriesAction
-
-
     data object loadEntries : EntriesAction
+
+
 
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import java.io.File
 
 class EntriesViewModel(
@@ -119,10 +120,16 @@ class EntriesViewModel(
             }
 
             EntriesAction.onSaveRecording -> {
-                state = state.copy(
-                    isRecording = false,
-                )
-                recorder.stop()
+                viewModelScope.launch {
+                    state = state.copy(
+                        isRecording = false,
+                        audioFileUri = audioFile?.absolutePath ?: ""
+                    )
+                    recorder.stop()
+
+                    eventChannel.send(EntriesEvent.OnSavedAudio(audioFile?.absolutePath ?: ""))
+                }
+
             }
 
             is EntriesAction.onSelectFilterMoods -> {

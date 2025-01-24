@@ -82,6 +82,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NewEntryScreenRoot(
+    path: String,
     viewModel: NewEntryViewModel = koinViewModel(),
     onBackClick: () -> Unit
 ) {

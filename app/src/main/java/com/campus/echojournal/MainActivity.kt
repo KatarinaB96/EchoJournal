@@ -54,6 +54,9 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onSettingsClick = {
                                     navController.navigate(Route.SettingsScreen)
+                                },
+                                onNavigateAddEntryScreen = { fileUri ->
+                                    navController.navigate(Route.AddEntryScreen(fileUri))
                                 }
                             )
                         }
@@ -76,7 +79,7 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Route.HomeScreen)
                                     }
                                 },
-                                //                                path = args.path
+                                path = args.fileUri
                             )
                         }
                         composable<Route.SettingsScreen>(

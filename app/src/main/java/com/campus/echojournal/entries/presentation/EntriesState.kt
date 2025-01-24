@@ -15,4 +15,5 @@ data class EntriesState(
     val entries: List<Entry> = emptyList(),
     val filteredEntries : List<Entry> = emptyList(),
     val topics: List<Topic> = emptyList(),
+    val audioFileUri: String = "",
 )

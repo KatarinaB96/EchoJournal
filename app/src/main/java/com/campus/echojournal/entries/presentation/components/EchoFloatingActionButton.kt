@@ -87,7 +87,7 @@ fun EchoFloatingActionButton(
     var globalPositionOfFAB by remember { mutableStateOf(IntOffset(0, 0)) }
     var initialPositionOfFAB by remember { mutableStateOf(IntOffset(0, 0)) }
     val interactionSource = remember { MutableInteractionSource() }
-
+    var isDragging by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth(0.4f),
         verticalAlignment = Alignment.CenterVertically,
@@ -191,19 +191,25 @@ fun EchoFloatingActionButton(
                             onDragStart = {
                                 initialPositionOfFAB = globalPositionOfFAB
                                 onStartRecording()
+                                isDragging = true
                             },
                             onDragCancel =
                             {
-
-                                onSaveRecording()
+                                if(isDragging){
+                                    onSaveRecording()
+                                    isDragging = false
+                                }
                             },
                             onDragEnd = {
 
                                 if (abs(globalPositionOfCancelButton.x - globalPositionOfFAB.x) <= 50) {
                                     // Cancel recording
                                     onCancelRecording()
+                                    isDragging = false
                                 } else {
                                     onSaveRecording()
+                                    isDragging = false
+
                                 }
                                 offsetX = 0f
                             }, onDrag = { change, dragAmount ->

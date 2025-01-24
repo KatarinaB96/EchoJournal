@@ -43,6 +43,7 @@ import com.campus.echojournal.entries.presentation.components.NoEntries
 import com.campus.echojournal.entries.presentation.components.SelectableMoodFilterList
 import com.campus.echojournal.entries.presentation.components.SelectableTopicFilterList
 import com.campus.echojournal.entries.util.allMoodsList
+import com.campus.echojournal.ui.ObserveAsEvents
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
@@ -51,10 +52,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun EntriesListScreenRoot(
     onSettingsClick: () -> Unit,
-
+    onNavigateAddEntryScreen : (String) -> Unit,
     viewModel: EntriesViewModel = org.koin.androidx.compose.koinViewModel()
 
 ) {
+
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            is EntriesEvent.OnSavedAudio -> {
+                onNavigateAddEntryScreen(event.audioFilePath)
+            }
+        }
+    }
 
     EntriesListScreen(
         state = viewModel.state,
@@ -110,6 +119,7 @@ private fun EntriesListScreen(
 
                 onSaveRecording = {
                     onAction(EntriesAction.onSaveRecording)
+
                 },
 
                 isRecording = state.isRecording,
