@@ -22,4 +22,6 @@
     <string name="add_description">Add Description…</string>
     <string name="checkmark">Checkmark</string>
     <string name="save">Save</string>
+    <string name="recording_your_memories">Recording your memories…</string>
+    <string name="recording">Recording</string>
 </resources>

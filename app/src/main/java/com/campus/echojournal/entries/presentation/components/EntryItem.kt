@@ -2,6 +2,7 @@ package com.campus.echojournal.entries.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -30,9 +32,14 @@ import com.campus.echojournal.ui.theme.LineColor
 
 @Composable
 fun EntryItem(
+    onClickPlay : (Int) -> Unit = {},
+    onClickPause : (Int) -> Unit = {},
+    onClickResume : (Int) -> Unit = {},
     index: Int = 0,
     modifier: Modifier = Modifier
 ) {
+
+    val scrollState = rememberScrollState()
     Row(modifier = modifier.height(IntrinsicSize.Max)) {
         Box(
             contentAlignment = Alignment.TopCenter,
@@ -81,14 +88,21 @@ fun EntryItem(
                     Text("19:42")
 
                 }
-                AudioWave()
+                AudioWave(
+                    onClickPlay = onClickPlay,
+                    onClickPause = onClickPause,
+                    onClickResume = onClickResume,
+                    index = index
+                )
                 Text(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed tdeades,Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed ",
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 3
                 )
                 Row(
-
+                    modifier = Modifier.horizontalScroll(
+                        scrollState
+                    )
                 ) {
                     repeat(
                         4

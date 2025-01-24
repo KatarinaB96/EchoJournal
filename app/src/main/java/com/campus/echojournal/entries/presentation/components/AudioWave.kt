@@ -1,6 +1,7 @@
 package com.campus.echojournal.entries.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,13 @@ import com.campus.echojournal.ui.theme.Neutral_95
 import com.linc.audiowaveform.AudioWaveform
 
 @Composable
-fun AudioWave(modifier: Modifier = Modifier) {
+fun AudioWave(
+    index : Int,
+    onClickPlay: (Int) -> Unit = {},
+    onClickPause: (Int) -> Unit = {},
+    onClickResume: (Int) -> Unit = {},
+    modifier: Modifier = Modifier
+) {
 
     var waveformProgress by remember { mutableStateOf(1F) }
     Row(
@@ -55,7 +62,8 @@ fun AudioWave(modifier: Modifier = Modifier) {
 
                 )
                 .clip(RoundedCornerShape(100.dp))
-                .background(Color.White),
+                .background(Color.White).clickable {
+                     onClickPlay(1)                },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -131,7 +139,9 @@ fun AudioWave(modifier: Modifier = Modifier) {
 private fun AudioWavePreview() {
     EchoJournalTheme {
         Surface {
-            AudioWave()
+            AudioWave(
+                index = 1
+            )
         }
 
     }

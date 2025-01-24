@@ -20,7 +20,7 @@ val Secondary95 = Color(0xFFEEF0FF)
 
 val OnErrorContainer = Color(0xFF680014)
 val OnError = Color(0xFFFFFFFF)
-val ErrorContainer = Color(0xFFFFFFFF)
+val ErrorContainer = Color(0xFFFFEDEC)
 
 val Outline = Color(0xFF6C7085)
 val OutlineVariant = Color(0xFFC1C3CE)
@@ -39,3 +39,7 @@ val Neutral_95 = Color(0xFFEEF7F3)
 val SurfaceColor = Color(0xFF475D92)
 
 val LineColor = Color(0xFFDFE2E8)
+
+val AnimationGradientColor1 = Color(0xFF3982F6)
+val AnimationGradientColor2 = Color(0xFF0E5FE0)
+

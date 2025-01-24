@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.campus.echojournal.entries.presentation.components
 
@@ -17,15 +16,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.campus.echojournal.R
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntriesListTopAppBar(modifier: Modifier = Modifier) {
+fun EntriesListTopAppBar(
+    onSettingsClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     TopAppBar(
         // I can't give the transparent color to the top app bar. So, I removed from Scaffold parameter.
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
         ),
         actions = {
-            IconButton(onClick = { /* doSomething() */ }) {
+            IconButton(onClick = { onSettingsClick() }) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_settings),
                     contentDescription = stringResource(R.string.settings),
