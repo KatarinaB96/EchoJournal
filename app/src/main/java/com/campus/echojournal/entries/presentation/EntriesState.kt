@@ -8,7 +8,7 @@ data class EntriesState(
     val isAllMoodsOpen: Boolean = false,
     val isAllTopicsOpen: Boolean = false,
     val selectedMoods: List<Int> = emptyList(),
-    val selectedTopics: List<Int> = emptyList(),
+    val selectedTopics: List<Topic> = emptyList(),
     val isRecordAudioBottomSheetOpen: Boolean = false,
     val isRecording: Boolean = false,
     val isPlaying: Boolean = false,

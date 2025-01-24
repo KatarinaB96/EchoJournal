@@ -35,12 +35,14 @@ import com.campus.echojournal.R
 import com.campus.echojournal.entries.presentation.components.BottomSheetContent
 import com.campus.echojournal.entries.presentation.components.EchoFloatingActionButton
 import com.campus.echojournal.entries.presentation.components.EntriesListDayView
-import com.campus.echojournal.entries.presentation.components.EntriesListFilterChip
+import com.campus.echojournal.entries.presentation.components.EntriesListMoodFilterChip
 import com.campus.echojournal.entries.presentation.components.EntriesListTopAppBar
+import com.campus.echojournal.entries.presentation.components.EntriesListTopicFilterChip
 import com.campus.echojournal.entries.presentation.components.NoEntries
 import com.campus.echojournal.entries.presentation.components.SelectableMoodFilterList
 import com.campus.echojournal.entries.presentation.components.SelectableTopicFilterList
 import com.campus.echojournal.entries.util.allMoodsList
+import com.campus.echojournal.entries.util.allTopicsList
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
@@ -233,8 +235,7 @@ private fun EntriesListScreen(
                             ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        EntriesListFilterChip(
-                            showIcons = true,
+                        EntriesListMoodFilterChip(
                             title = "All Moods",
                             selectedList = state.selectedMoods,
                             isActive = state.isAllMoodsOpen,
@@ -243,15 +244,14 @@ private fun EntriesListScreen(
                             }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                       /* EntriesListFilterChip(
-                            showIcons = false,
+                        EntriesListTopicFilterChip(
                             selectedList = state.selectedTopics,
                             isActive = state.isAllTopicsOpen,
                             onClick = {
                                 onAction(EntriesAction.onClickAllTopics)
                             },
                             title = "All Topics"
-                        )*/
+                        )
                     }
                     Box {
                         SelectableMoodFilterList(
@@ -264,7 +264,7 @@ private fun EntriesListScreen(
                         )
 
                         SelectableTopicFilterList(
-                            itemList = state.topics,
+                            itemList = allTopicsList,
                             isVisible = state.isAllTopicsOpen,
                             selectedItemList = state.selectedTopics,
                             onClick = { item ->

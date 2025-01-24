@@ -34,8 +34,8 @@ import com.campus.echojournal.ui.theme.SurfaceColor
 
 @Composable
 fun SelectableTopicFilterList(
-    onClick: (Int) -> Unit,
-    selectedItemList: List<Int>,
+    onClick: (Topic) -> Unit,
+    selectedItemList: List<Topic>,
     itemList: List<Topic>,
     isVisible: Boolean = false,
     modifier: Modifier = Modifier
@@ -82,11 +82,13 @@ fun SelectableTopicFilterList(
                             .padding(bottom = 8.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .background(
-                                if (selectedItemList.contains(index))
+                                if (selectedItemList.contains(topic))
                                     SurfaceColor.copy(alpha = 0.05f) else Color.Transparent
                             )
                             .clickable {
-                                onClick(index)
+                                onClick(
+                                    topic
+                                )
                             }
                             .padding(vertical = 6.dp, horizontal = 3.dp)
 
@@ -104,7 +106,7 @@ fun SelectableTopicFilterList(
                             )
                         }
 
-                        if (selectedItemList.contains(index)) {
+                        if (selectedItemList.contains(topic)) {
                             Image(
                                 modifier = Modifier.padding(end = 8.dp),
                                 painter = painterResource(id = R.drawable.ic_check),
@@ -127,7 +129,7 @@ private fun SelectableTopicFilterListPreview() {
         SelectableTopicFilterList(
             isVisible = true,
             onClick = {},
-            selectedItemList = listOf(1),
+            selectedItemList = listOf(Topic(1,"Topic 1", false)),
             itemList = allTopicsList
         )
     }

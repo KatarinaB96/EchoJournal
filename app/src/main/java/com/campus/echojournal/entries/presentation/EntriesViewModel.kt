@@ -128,14 +128,20 @@ class EntriesViewModel(
             }
 
             is EntriesAction.onSelectFilterTopics -> {
-        /*        val item = action.topic
+                val item = action.topic
                 val selectedTopics = state.selectedTopics.toMutableList()
-                if (!selectedTopics.removeAll { it.second == item }) { // remove if already selected
-                    selectedTopics.add(Pair(R.drawable.ic_hashtag, item)) // add to selected
+                if (!selectedTopics.removeIf {
+                    it == item
+                    }) { // remove if already selected
+                    selectedTopics.add(item) // add to selected
                 }
                 state = state.copy(
                     selectedTopics = selectedTopics
-                )*/
+                )
+                println(
+                    "Selected Topics: ${state.selectedTopics}"
+                )
+
             }
 
             EntriesAction.OnDismissRecordAudioBottomSheet -> {
