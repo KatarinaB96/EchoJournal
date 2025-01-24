@@ -13,5 +13,6 @@ data class EntriesState(
     val isRecording: Boolean = false,
     val isPlaying: Boolean = false,
     val entries: List<Entry> = emptyList(),
+    val filteredEntries : List<Entry> = emptyList(),
     val topics: List<Topic> = emptyList(),
 )

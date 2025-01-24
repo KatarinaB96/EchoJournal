@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -42,7 +43,6 @@ import com.campus.echojournal.entries.presentation.components.NoEntries
 import com.campus.echojournal.entries.presentation.components.SelectableMoodFilterList
 import com.campus.echojournal.entries.presentation.components.SelectableTopicFilterList
 import com.campus.echojournal.entries.util.allMoodsList
-import com.campus.echojournal.entries.util.allTopicsList
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
@@ -79,10 +79,6 @@ private fun EntriesListScreen(
     state: EntriesState,
     onAction: (EntriesAction) -> Unit
 ) {
-    val entriesList = listOf<String>(
-        "Echo 1",
-        "Echo 2",
-    )
     val skipPartiallyExpanded by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = skipPartiallyExpanded,
@@ -192,13 +188,11 @@ private fun EntriesListScreen(
         ) {
 
 
-            if (entriesList.isEmpty()) {
+            if (state.filteredEntries.isEmpty()) {
                 NoEntries(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {
-
-
                 LazyColumn(
                     modifier = Modifier
                         .padding(
@@ -208,7 +202,7 @@ private fun EntriesListScreen(
                             top = 56.dp
                         )
                 ) {
-                    items(3) { it ->
+                    items(state.filteredEntries) { it ->
                         EntriesListDayView(
                             onClickPlay = {
                                 onAction(EntriesAction.onPlayAudio(it))
@@ -264,7 +258,7 @@ private fun EntriesListScreen(
                         )
 
                         SelectableTopicFilterList(
-                            itemList = allTopicsList,
+                            itemList = state.topics,
                             isVisible = state.isAllTopicsOpen,
                             selectedItemList = state.selectedTopics,
                             onClick = { item ->

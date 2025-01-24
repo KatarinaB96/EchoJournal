@@ -26,4 +26,6 @@ sealed interface EntriesAction {
     data object onSettingsClick: EntriesAction
 
 
+    data object loadEntries : EntriesAction
+
 }

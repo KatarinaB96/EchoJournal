@@ -71,7 +71,7 @@ class EntriesViewModel(
                 )
             }
 
-            is EntriesAction.onPauseAudio ->{
+            is EntriesAction.onPauseAudio -> {
                 player.pause()
                 state = state.copy(
                     isPlaying = false
@@ -91,7 +91,8 @@ class EntriesViewModel(
                     isPlaying = true
                 )
             }
-            is EntriesAction.onResumeAudio ->{
+
+            is EntriesAction.onResumeAudio -> {
                 player.resume()
                 state = state.copy(
                     isPlaying = true
@@ -116,12 +117,19 @@ class EntriesViewModel(
                 val item = action.moodId
                 val selectedMoods = state.selectedMoods.toMutableList()
                 if (!selectedMoods.removeIf {
-                    it == item }) { // remove if already selected
+                        it == item
+                    }) { // remove if already selected
                     val selectedMood = item
                     selectedMoods.add(selectedMood) // add to selected
                 }
+
+                val filteredEntries = state.entries.filter {
+                    it.moodIndex == item
+                }
+
                 state = state.copy(
-                    selectedMoods = selectedMoods
+                    selectedMoods = selectedMoods,
+                    filteredEntries = filteredEntries
                 )
 
                 println("Selected Moods: ${state.selectedMoods}")
@@ -131,12 +139,16 @@ class EntriesViewModel(
                 val item = action.topic
                 val selectedTopics = state.selectedTopics.toMutableList()
                 if (!selectedTopics.removeIf {
-                    it == item
+                        it == item
                     }) { // remove if already selected
                     selectedTopics.add(item) // add to selected
                 }
+                val filteredEntries = state.entries.filter {
+                    it.topics.contains(item)
+                }
                 state = state.copy(
-                    selectedTopics = selectedTopics
+                    selectedTopics = selectedTopics,
+                    filteredEntries = filteredEntries
                 )
                 println(
                     "Selected Topics: ${state.selectedTopics}"
@@ -148,6 +160,12 @@ class EntriesViewModel(
                 state = state.copy(
                     isRecordAudioBottomSheetOpen = false
                 )
+            }
+
+            EntriesAction.loadEntries -> {
+                // Load entries
+
+
             }
 
             else -> Unit

@@ -1,7 +1,6 @@
 package com.campus.echojournal.entries.presentation.components
 
 import com.campus.echojournal.core.domain.models.Topic
-import com.campus.echojournal.entries.util.allTopicsList
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -130,7 +129,7 @@ private fun SelectableTopicFilterListPreview() {
             isVisible = true,
             onClick = {},
             selectedItemList = listOf(Topic(1,"Topic 1", false)),
-            itemList = allTopicsList
+            itemList = listOf(Topic(1,"Topic 1", false))
         )
     }
 }
