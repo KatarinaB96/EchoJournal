@@ -17,6 +17,8 @@ core-splashscreen = "1.0.1"
 koin = "4.0.0"
 audiowaveform = "1.1.2"
 navigationCompose = "2.8.5"
+navigationRuntimeKtx = "2.8.5"
+junitKtx = "1.2.1"
 
 
 [libraries]
@@ -48,6 +50,8 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", versi
 
 audiowaveform = { group = "com.github.lincollincol", name = "compose-audiowaveform", version.ref = "audiowaveform" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

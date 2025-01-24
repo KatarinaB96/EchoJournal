@@ -15,6 +15,8 @@ val OnSurface = Color(0xFF191A20)
 val SurfaceVariant = Color(0xFFE1E2EC)
 val InverseOnSurface = Color(0xFFEEF0FF)
 val OnSurfaceVariant = Color(0xFF40434F)
+val Secondary70 = Color(0xFF9FABCD)
+val Secondary95 = Color(0xFFEEF0FF)
 
 val OnErrorContainer = Color(0xFF680014)
 val OnError = Color(0xFFFFFFFF)

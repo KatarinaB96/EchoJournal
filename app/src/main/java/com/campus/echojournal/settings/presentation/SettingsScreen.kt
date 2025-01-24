@@ -25,13 +25,27 @@ import com.campus.echojournal.settings.presentation.components.MoodCard
 import com.campus.echojournal.ui.theme.OnSurface
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
+fun SettingsScreenRoot(
     viewModel: SettingsViewModel = koinViewModel(),
+    onBackClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    SettingsScreen(
+        state = state,
+        onAction = { action ->
+            viewModel.onAction(action)
+        },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen(
+    state: TopicListState,
+    onAction: (TopicListAction) -> Unit,
+) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = {
@@ -52,15 +66,15 @@ fun SettingsScreen(
         )
     }) { paddingValues ->
         Column(Modifier.padding(paddingValues)) {
-            MoodCard(  state = state,
+            MoodCard(state = state,
                 onAction = { action ->
-                    viewModel.onAction(action)
+                    onAction(action)
                 })
             Spacer(Modifier.height(16.dp))
             FilterChipDropdown(
                 state = state,
                 onAction = { action ->
-                    viewModel.onAction(action)
+                    onAction(action)
                 }
             )
         }
@@ -70,5 +84,5 @@ fun SettingsScreen(
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    SettingsScreen()
+    SettingsScreen(state = TopicListState(), {})
 }
