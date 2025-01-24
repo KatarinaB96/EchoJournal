@@ -18,12 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.campus.echojournal.entries.util.allMoodsList
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 
 @Composable
 fun EntriesListFilterChip(
     title: String,
-    selectedList: List<Pair<Int, String>> = emptyList(),
+    selectedList: List<Int> = emptyList(),
     onClick: () -> Unit = {},
     isActive: Boolean = false,
     modifier: Modifier = Modifier,
@@ -59,19 +60,20 @@ fun EntriesListFilterChip(
             1 -> {
                 if (showIcons) {
                     Image(
-                        painter = painterResource(id = selectedList[0].first),
-                        contentDescription = selectedList[0].second,
+                        painter = painterResource(id = allMoodsList[selectedList[0]].first),
+                        contentDescription = allMoodsList[selectedList[0]].second,
                     )
                     Text(
                         modifier = Modifier.padding(
                             start = 8.dp
                         ),
-                        text = selectedList.joinToString { it.second },
+                        text = selectedList.joinToString { allMoodsList[it].second },
                     )
                 } else {
-                    Text(
-                        text = selectedList.joinToString { it.second },
-                    )
+                    //TODO
+                    //  Text(
+                    //    text = selectedList.joinToString { it.second },
+                    // )
                 }
             }
 
@@ -82,8 +84,8 @@ fun EntriesListFilterChip(
                             Image(
                                 modifier = Modifier
                                     .offset(x = if (i != 0) (-15 * i).dp else 0.dp),
-                                painter = painterResource(id = selectedList[i].first),
-                                contentDescription = selectedList[i].second,
+                                painter = painterResource(id = allMoodsList[selectedList[i]].first),
+                                contentDescription = allMoodsList[selectedList[i]].second,
                             )
                         }
                     }
@@ -93,13 +95,13 @@ fun EntriesListFilterChip(
                             .padding(
                                 start = 8.dp
                             ),
-                        text = selectedList.joinToString { it.second },
+                        text = selectedList.joinToString { allMoodsList[it].second },
                     )
                 } else {
-                    Text(
+                 /*   Text(
                         modifier = Modifier.padding(start = 8.dp),
                         text = selectedList.joinToString { it.second },
-                    )
+                    )*/
                 }
 
 
@@ -112,8 +114,8 @@ fun EntriesListFilterChip(
                             Image(
                                 modifier = Modifier
                                     .offset(x = if (i != 0) (-15 * i).dp else 0.dp),
-                                painter = painterResource(id = selectedList[i].first),
-                                contentDescription = selectedList[i].second,
+                                painter = painterResource(id = allMoodsList[selectedList[i]].first),
+                                contentDescription = allMoodsList[selectedList[i]].second,
                             )
                         }
                     }
@@ -123,7 +125,7 @@ fun EntriesListFilterChip(
                             .padding(
                                 start = 8.dp
                             ),
-                        text = selectedList.joinToString(limit = 2, truncated = "") { it.second },
+                        text = selectedList.joinToString(limit = 2, truncated = "") {  allMoodsList[it].second  },
                     )
                     Text(
                         modifier = Modifier
@@ -137,7 +139,7 @@ fun EntriesListFilterChip(
                             .padding(
                                 start = 8.dp
                             ),
-                        text = selectedList.joinToString(limit = 2, truncated = "") { it.second },
+                        text = selectedList.joinToString(limit = 2, truncated = "") {  allMoodsList[it].second  },
                     )
                     Text(
 

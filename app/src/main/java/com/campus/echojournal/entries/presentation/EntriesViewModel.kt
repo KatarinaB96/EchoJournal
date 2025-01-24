@@ -5,10 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.campus.echojournal.R
 import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.core.utils.recorder.AndroidAudioRecorder
-import com.campus.echojournal.entries.util.allMoodsList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import java.io.File
@@ -115,28 +113,29 @@ class EntriesViewModel(
             }
 
             is EntriesAction.onSelectFilterMoods -> {
-                val item = action.mood
+                val item = action.moodId
                 val selectedMoods = state.selectedMoods.toMutableList()
-                if (!selectedMoods.removeAll { it.second == item }) { // remove if already selected
-                    val selectedMood = allMoodsList.find {
-                        it.second == item
-                    } ?: Pair(0, "")
+                if (!selectedMoods.removeIf {
+                    it == item }) { // remove if already selected
+                    val selectedMood = item
                     selectedMoods.add(selectedMood) // add to selected
                 }
                 state = state.copy(
                     selectedMoods = selectedMoods
                 )
+
+                println("Selected Moods: ${state.selectedMoods}")
             }
 
             is EntriesAction.onSelectFilterTopics -> {
-                val item = action.topic
+        /*        val item = action.topic
                 val selectedTopics = state.selectedTopics.toMutableList()
                 if (!selectedTopics.removeAll { it.second == item }) { // remove if already selected
                     selectedTopics.add(Pair(R.drawable.ic_hashtag, item)) // add to selected
                 }
                 state = state.copy(
                     selectedTopics = selectedTopics
-                )
+                )*/
             }
 
             EntriesAction.OnDismissRecordAudioBottomSheet -> {

@@ -38,9 +38,9 @@ import com.campus.echojournal.entries.presentation.components.EntriesListDayView
 import com.campus.echojournal.entries.presentation.components.EntriesListFilterChip
 import com.campus.echojournal.entries.presentation.components.EntriesListTopAppBar
 import com.campus.echojournal.entries.presentation.components.NoEntries
-import com.campus.echojournal.entries.presentation.components.SelectableFilterList
+import com.campus.echojournal.entries.presentation.components.SelectableMoodFilterList
+import com.campus.echojournal.entries.presentation.components.SelectableTopicFilterList
 import com.campus.echojournal.entries.util.allMoodsList
-import com.campus.echojournal.entries.util.allTopicsList
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
@@ -243,7 +243,7 @@ private fun EntriesListScreen(
                             }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        EntriesListFilterChip(
+                       /* EntriesListFilterChip(
                             showIcons = false,
                             selectedList = state.selectedTopics,
                             isActive = state.isAllTopicsOpen,
@@ -251,25 +251,22 @@ private fun EntriesListScreen(
                                 onAction(EntriesAction.onClickAllTopics)
                             },
                             title = "All Topics"
-                        )
+                        )*/
                     }
                     Box {
-                        SelectableFilterList(
+                        SelectableMoodFilterList(
                             itemList = allMoodsList,
                             isVisible = state.isAllMoodsOpen,
-                            selectedItemList = state.selectedMoods.map {
-                                it.second
-                            },
+                            selectedItemList = state.selectedMoods,
                             onClick = { item ->
                                 onAction(EntriesAction.onSelectFilterMoods(item))
                             }
                         )
-                        SelectableFilterList(
-                            itemList = allTopicsList,
+
+                        SelectableTopicFilterList(
+                            itemList = state.topics,
                             isVisible = state.isAllTopicsOpen,
-                            selectedItemList = state.selectedTopics.map {
-                                it.second
-                            },
+                            selectedItemList = state.selectedTopics,
                             onClick = { item ->
                                 onAction(EntriesAction.onSelectFilterTopics(item))
 

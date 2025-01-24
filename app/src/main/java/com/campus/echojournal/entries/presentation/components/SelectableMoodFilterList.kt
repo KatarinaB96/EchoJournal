@@ -31,9 +31,9 @@ import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.SurfaceColor
 
 @Composable
-fun SelectableFilterList(
-    onClick: (String) -> Unit,
-    selectedItemList: List<String>,
+fun SelectableMoodFilterList(
+    onClick: (Int) -> Unit,
+    selectedItemList: List<Int>,
     itemList: List<Pair<Int, String>>,
     isVisible: Boolean = false,
     modifier: Modifier = Modifier
@@ -70,7 +70,9 @@ fun SelectableFilterList(
             Column(
                 modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)
             ) {
-                for (item in itemList) {
+
+                itemList.forEachIndexed { index, pair ->
+
                     Row(horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -78,11 +80,11 @@ fun SelectableFilterList(
                             .padding(bottom = 8.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .background(
-                                if (selectedItemList.contains(item.second))
+                                if (selectedItemList.contains(index))
                                     SurfaceColor.copy(alpha = 0.05f) else Color.Transparent
                             )
                             .clickable {
-                                onClick(item.second)
+                                onClick(index)
                             }
                             .padding(vertical = 6.dp, horizontal = 3.dp)
 
@@ -91,16 +93,16 @@ fun SelectableFilterList(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Image(
-                                painter = painterResource(id = item.first),
+                                painter = painterResource(id = pair.first),
                                 contentDescription = "Mood",
                             )
                             Text(
-                                text = item.second,
+                                text = pair.second,
                                 modifier = Modifier.padding(start = 8.dp)
                             )
                         }
 
-                        if (selectedItemList.contains(item.second)) {
+                        if (selectedItemList.contains(index)) {
                             Image(
                                 modifier = Modifier.padding(end = 8.dp),
                                 painter = painterResource(id = R.drawable.ic_check),
@@ -108,23 +110,22 @@ fun SelectableFilterList(
                             )
                         }
                     }
-
-
                 }
             }
         }
-
     }
+
 }
+
 
 @Preview
 @Composable
 private fun SelectableFilterListPreview() {
     EchoJournalTheme {
-        SelectableFilterList(
+        SelectableMoodFilterList(
             isVisible = true,
             onClick = {},
-            selectedItemList = listOf("Excited"),
+            selectedItemList = listOf(1),
             itemList = listOf(
                 Pair(R.drawable.mood_excited_active_on, "Excited"),
                 Pair(R.drawable.mood_peaceful_active_on, "Peaceful"),
