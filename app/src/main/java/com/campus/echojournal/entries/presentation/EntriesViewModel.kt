@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.campus.echojournal.core.domain.JournalRepository
+import com.campus.echojournal.core.domain.models.Entry
 import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.core.utils.recorder.AndroidAudioRecorder
 import kotlinx.coroutines.channels.Channel
@@ -142,9 +143,8 @@ class EntriesViewModel(
                     selectedMoods.add(selectedMood) // add to selected
                 }
 
-                val filteredEntries = state.entries.filter {
-                    it.moodIndex == item
-                }
+                val filteredEntries =  filterEntries()
+
 
                 state = state.copy(
                     selectedMoods = selectedMoods,
@@ -162,9 +162,7 @@ class EntriesViewModel(
                     }) { // remove if already selected
                     selectedTopics.add(item) // add to selected
                 }
-                val filteredEntries = state.entries.filter {
-                    it.topics.contains(item)
-                }
+                val filteredEntries =  filterEntries()
                 state = state.copy(
                     selectedTopics = selectedTopics,
                     filteredEntries = filteredEntries
@@ -190,5 +188,20 @@ class EntriesViewModel(
             else -> Unit
         }
 
+    }
+
+    private fun filterEntries(
+    ): List<Entry> {
+        return state.entries.filter { entry ->
+            val moodMatch = state.selectedMoods.isEmpty() || entry.moodIndex in state.selectedMoods
+
+            val topicMatch = state.selectedTopics.isEmpty() ||
+                    entry.topics.any { entryTopic ->
+                        state.selectedTopics.any { filterTopic ->
+                            filterTopic.id == entryTopic.id
+                        }
+                    }
+            moodMatch && topicMatch
+        }
     }
 }
