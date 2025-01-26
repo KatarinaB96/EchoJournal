@@ -6,6 +6,7 @@ data class Entry(
     val moodIndex: Int,
     val recordingPath: String,
     val topics: List<Topic>,
-    val description: String
+    val description: String,
+    val createdDate: Long = System.currentTimeMillis()
 )
 
