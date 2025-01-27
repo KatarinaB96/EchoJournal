@@ -47,7 +47,6 @@ import com.campus.echojournal.ui.ObserveAsEvents
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
-import kotlinx.coroutines.launch
 
 @Composable
 fun EntriesListScreenRoot(
@@ -170,10 +169,8 @@ private fun EntriesListScreen(
                         onAction(EntriesAction.onSaveRecording)
                     },
                     onCloseBottomSheet = {
-                        coroutineScope.launch {
-                            sheetState.hide()
                             onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
-                        }
+
 
                     },
                     isRecording = state.isRecording
