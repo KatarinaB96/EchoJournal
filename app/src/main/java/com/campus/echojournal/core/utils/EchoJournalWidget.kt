@@ -8,6 +8,8 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.action.ActionParameters
+import androidx.glance.action.actionParametersOf
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
@@ -31,8 +33,14 @@ class EchoJournalWidget : GlanceAppWidget() {
         Column(
             modifier = GlanceModifier
                 .cornerRadius(20.dp)
-                .clickable(onClick = actionStartActivity<MainActivity>()),
-            verticalAlignment = Alignment.Top,
+                .clickable(
+                    onClick = actionStartActivity<MainActivity>(
+                        parameters = actionParametersOf(
+                            ActionParameters.Key<Boolean>("START_RECORDING") to true
+                        )
+                    )
+                ),
+        verticalAlignment = Alignment.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(

@@ -1,12 +1,18 @@
 package com.campus.echojournal
 
 import android.Manifest
+import android.app.ApplicationStartInfo
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
@@ -38,6 +44,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             EchoJournalTheme {
                 val navController = rememberNavController()
+                val startRecording = intent?.getBooleanExtra("START_RECORDING", false) ?: false
+                Log.d("Widget", "START_RECORDING received: $startRecording")
                 NavHost(
                     navController = navController,
                     startDestination = Route.EchoGraph
@@ -45,11 +53,11 @@ class MainActivity : ComponentActivity() {
                     navigation<Route.EchoGraph>(startDestination = Route.HomeScreen) {
                         composable<Route.HomeScreen>(
                             exitTransition = { slideOutHorizontally() },
-                            popEnterTransition = {
-                                slideInHorizontally()
-                            }
+                            popEnterTransition = { slideInHorizontally() }
                         ) {
                             val viewModel = koinViewModel<EntriesViewModel>()
+                            viewModel.setStartRecording(startRecording)
+
                             EntriesListScreenRoot(
                                 viewModel = viewModel,
                                 onSettingsClick = {
@@ -60,6 +68,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+
 
                         composable<Route.AddEntryScreen>(
                             exitTransition = { slideOutHorizontally() },

@@ -1,6 +1,7 @@
 package com.campus.echojournal.entries.presentation
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,8 @@ import com.campus.echojournal.core.domain.models.Entry
 import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.core.utils.recorder.AndroidAudioRecorder
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -24,12 +27,14 @@ class EntriesViewModel(
     var state by mutableStateOf(EntriesState())
         private set
 
+    //    private val _startRecording = MutableStateFlow(false) // Tracks if recording should start
+    //    val startRecording: StateFlow<Boolean> = _startRecording
+
     init {
         repository.getAllEntriesWithTopics().onEach { entries ->
             state = state.copy(entries = entries, filteredEntries = entries)
         }.launchIn(viewModelScope)
     }
-
 
     private val eventChannel = Channel<EntriesEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -44,21 +49,23 @@ class EntriesViewModel(
 
     private var audioFile: File? = null
 
-
     fun onAction(action: EntriesAction) {
+        Log.d("Widget", "EntriesViewModel onAction called with: $action")
         when (action) {
             EntriesAction.onStartRecording -> {
+                Log.d("Widget", "EntriesViewModel Starting recording")
                 state = state.copy(
                     isRecording = true
                 )
                 File(application.cacheDir, "audio_${System.currentTimeMillis()}.mp3").also {
                     recorder.start(it)
                     audioFile = it
+                    Log.d("Widget", " EntriesViewModel Recording started at: ${it.absolutePath}")
                 }
-
             }
 
             EntriesAction.onCancelRecording -> {
+                Log.d("Widget", "EntriesViewModel Canceling recording")
                 state = state.copy(
                     isRecording = false,
                 )
@@ -66,6 +73,7 @@ class EntriesViewModel(
             }
 
             EntriesAction.onClickAddEntry -> {
+                Log.d("Widget",  " EntriesViewModel Opening bottom sheet")
                 state = state.copy(
                     isRecordAudioBottomSheetOpen = true
                 )
@@ -203,5 +211,15 @@ class EntriesViewModel(
                     }
             moodMatch && topicMatch
         }
+    }
+
+    fun setStartRecording(startRecording: Boolean) {
+        if (startRecording){
+            state = state.copy(
+                isRecordAudioBottomSheetOpen = true
+            )
+            Log.d("Widget", "EntriesViewModel setStartRecording called with: $startRecording")
+        }
+
     }
 }
