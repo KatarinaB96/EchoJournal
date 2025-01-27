@@ -48,6 +48,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -56,6 +59,24 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.androidx.ui.text.google.fonts)
+    implementation(libs.core.splashscreen)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation (libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.workmanager)
+    implementation(libs.koin.androidx.compose)
+
+    implementation (libs.androidx.datastore.preferences)
+
+
+    implementation (libs.audiowaveform)
+
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.core.splashscreen)
 
