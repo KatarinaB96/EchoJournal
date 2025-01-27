@@ -10,7 +10,7 @@ sealed interface Route {
     data object HomeScreen : Route
 
     @Serializable
-    data object AddEntryScreen : Route
+    data class AddEntryScreen(val fileUri : String) : Route
 
     @Serializable
     data object SettingsScreen : Route

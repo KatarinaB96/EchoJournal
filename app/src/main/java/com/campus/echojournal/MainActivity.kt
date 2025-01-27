@@ -15,6 +15,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.campus.echojournal.core.utils.Route
+import com.campus.echojournal.entries.presentation.EntriesListScreenRoot
+import com.campus.echojournal.entries.presentation.EntriesViewModel
 import com.campus.echojournal.entries.presentation.NewEntryScreenRoot
 import com.campus.echojournal.entries.presentation.NewEntryViewModel
 import com.campus.echojournal.settings.presentation.SettingsScreenRoot
@@ -47,10 +49,16 @@ class MainActivity : ComponentActivity() {
                                 slideInHorizontally()
                             }
                         ) {
-                            //                            val viewModel = koinViewModel<EntriesViewModel>()
-                            //                            EntriesListScreenRoot(
-                            //                                //                                viewModel = viewModel,
-                            //                            )
+                            val viewModel = koinViewModel<EntriesViewModel>()
+                            EntriesListScreenRoot(
+                                viewModel = viewModel,
+                                onSettingsClick = {
+                                    navController.navigate(Route.SettingsScreen)
+                                },
+                                onNavigateAddEntryScreen = { fileUri ->
+                                    navController.navigate(Route.AddEntryScreen(fileUri))
+                                }
+                            )
                         }
 
                         composable<Route.AddEntryScreen>(
@@ -71,7 +79,7 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Route.HomeScreen)
                                     }
                                 },
-                                //                                path = args.path
+                                path = args.fileUri
                             )
                         }
                         composable<Route.SettingsScreen>(
@@ -94,18 +102,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                val viewModel = koinViewModel<NewEntryViewModel>()
-                NewEntryScreenRoot(
-                    viewModel = viewModel,
-                    onBackClick = {
-                        //                                                    if (navController.previousBackStackEntry != null) {
-                        //                                                        navController.navigateUp()
-                        //                                                    } else {
-                        //                                                        navController.navigate(Route.EntryList)
-                        //                                                    }
-                    },
-                    //                                path = args.path
-                )
+
 
             }
         }

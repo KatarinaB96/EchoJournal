@@ -64,6 +64,7 @@ import com.campus.echojournal.R
 import com.campus.echojournal.core.domain.models.Topic
 import com.campus.echojournal.entries.presentation.components.AudioWave
 import com.campus.echojournal.entries.presentation.components.TopicPicker
+import com.campus.echojournal.entries.util.allMoodsList
 import com.campus.echojournal.settings.presentation.components.SelectableMood
 import com.campus.echojournal.ui.theme.Background
 import com.campus.echojournal.ui.theme.BlueGradient1
@@ -81,6 +82,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NewEntryScreenRoot(
+    path: String,
     viewModel: NewEntryViewModel = koinViewModel(),
     onBackClick: () -> Unit
 ) {
@@ -141,7 +143,9 @@ fun NewEntryScreen(
                 keyboardController = keyboardController
             )
 
-            AudioWave()
+            AudioWave(
+                index = 1
+            )
             Spacer(Modifier.height(16.dp))
             TopicPicker(
                 defaultTopics = state.defaultTopics,
@@ -199,13 +203,7 @@ fun AddTitleField(
     focusRequester: FocusRequester,
     keyboardController: SoftwareKeyboardController?
 ) {
-    val moods = listOf(
-        R.drawable.mood_stresses_active,
-        R.drawable.mood_sad_active_on,
-        R.drawable.mood_neutral_active_on,
-        R.drawable.mood_peaceful_active_on,
-        R.drawable.mood_excited_active_on,
-    )
+    val moods = allMoodsList.map { it.first }
 
     TextField(
         leadingIcon = {

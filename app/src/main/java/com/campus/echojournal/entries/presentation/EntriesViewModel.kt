@@ -5,19 +5,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.campus.echojournal.R
+import androidx.lifecycle.viewModelScope
+import com.campus.echojournal.core.domain.JournalRepository
+import com.campus.echojournal.core.domain.models.Entry
 import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.core.utils.recorder.AndroidAudioRecorder
-import com.campus.echojournal.entries.util.allMoodsList
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import java.io.File
 
 class EntriesViewModel(
-    private val application: Application
+    private val application: Application,
+    private val repository: JournalRepository,
 ) : ViewModel() {
     var state by mutableStateOf(EntriesState())
         private set
+
+    init {
+        repository.getAllEntriesWithTopics().onEach { entries ->
+            state = state.copy(entries = entries, filteredEntries = entries)
+        }.launchIn(viewModelScope)
+    }
+
 
     private val eventChannel = Channel<EntriesEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -73,7 +85,7 @@ class EntriesViewModel(
                 )
             }
 
-            is EntriesAction.onPauseAudio ->{
+            is EntriesAction.onPauseAudio -> {
                 player.pause()
                 state = state.copy(
                     isPlaying = false
@@ -93,7 +105,8 @@ class EntriesViewModel(
                     isPlaying = true
                 )
             }
-            is EntriesAction.onResumeAudio ->{
+
+            is EntriesAction.onResumeAudio -> {
                 player.resume()
                 state = state.copy(
                     isPlaying = true
@@ -108,35 +121,56 @@ class EntriesViewModel(
             }
 
             EntriesAction.onSaveRecording -> {
-                state = state.copy(
-                    isRecording = false,
-                )
-                recorder.stop()
+                viewModelScope.launch {
+                    state = state.copy(
+                        isRecording = false,
+                        audioFileUri = audioFile?.absolutePath ?: ""
+                    )
+                    recorder.stop()
+
+                    eventChannel.send(EntriesEvent.OnSavedAudio(audioFile?.absolutePath ?: ""))
+                }
+
             }
 
             is EntriesAction.onSelectFilterMoods -> {
-                val item = action.mood
+                val item = action.moodId
                 val selectedMoods = state.selectedMoods.toMutableList()
-                if (!selectedMoods.removeAll { it.second == item }) { // remove if already selected
-                    val selectedMood = allMoodsList.find {
-                        it.second == item
-                    } ?: Pair(0, "")
+                if (!selectedMoods.removeIf {
+                        it == item
+                    }) { // remove if already selected
+                    val selectedMood = item
                     selectedMoods.add(selectedMood) // add to selected
                 }
+
+                val filteredEntries =  filterEntries()
+
+
                 state = state.copy(
-                    selectedMoods = selectedMoods
+                    selectedMoods = selectedMoods,
+                    filteredEntries = filteredEntries
                 )
+
+                println("Selected Moods: ${state.selectedMoods}")
             }
 
             is EntriesAction.onSelectFilterTopics -> {
                 val item = action.topic
                 val selectedTopics = state.selectedTopics.toMutableList()
-                if (!selectedTopics.removeAll { it.second == item }) { // remove if already selected
-                    selectedTopics.add(Pair(R.drawable.ic_hashtag, item)) // add to selected
+                if (!selectedTopics.removeIf {
+                        it == item
+                    }) { // remove if already selected
+                    selectedTopics.add(item) // add to selected
                 }
+                val filteredEntries =  filterEntries()
                 state = state.copy(
-                    selectedTopics = selectedTopics
+                    selectedTopics = selectedTopics,
+                    filteredEntries = filteredEntries
                 )
+                println(
+                    "Selected Topics: ${state.selectedTopics}"
+                )
+
             }
 
             EntriesAction.OnDismissRecordAudioBottomSheet -> {
@@ -145,8 +179,29 @@ class EntriesViewModel(
                 )
             }
 
+            EntriesAction.loadEntries -> {
+                // Load entries
+
+
+            }
+
             else -> Unit
         }
 
+    }
+
+    private fun filterEntries(
+    ): List<Entry> {
+        return state.entries.filter { entry ->
+            val moodMatch = state.selectedMoods.isEmpty() || entry.moodIndex in state.selectedMoods
+
+            val topicMatch = state.selectedTopics.isEmpty() ||
+                    entry.topics.any { entryTopic ->
+                        state.selectedTopics.any { filterTopic ->
+                            filterTopic.id == entryTopic.id
+                        }
+                    }
+            moodMatch && topicMatch
+        }
     }
 }

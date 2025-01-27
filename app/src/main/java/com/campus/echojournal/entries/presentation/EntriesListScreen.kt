@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -35,12 +36,14 @@ import com.campus.echojournal.R
 import com.campus.echojournal.entries.presentation.components.BottomSheetContent
 import com.campus.echojournal.entries.presentation.components.EchoFloatingActionButton
 import com.campus.echojournal.entries.presentation.components.EntriesListDayView
-import com.campus.echojournal.entries.presentation.components.EntriesListFilterChip
+import com.campus.echojournal.entries.presentation.components.EntriesListMoodFilterChip
 import com.campus.echojournal.entries.presentation.components.EntriesListTopAppBar
+import com.campus.echojournal.entries.presentation.components.EntriesListTopicFilterChip
 import com.campus.echojournal.entries.presentation.components.NoEntries
-import com.campus.echojournal.entries.presentation.components.SelectableFilterList
+import com.campus.echojournal.entries.presentation.components.SelectableMoodFilterList
+import com.campus.echojournal.entries.presentation.components.SelectableTopicFilterList
 import com.campus.echojournal.entries.util.allMoodsList
-import com.campus.echojournal.entries.util.allTopicsList
+import com.campus.echojournal.ui.ObserveAsEvents
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
@@ -49,10 +52,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun EntriesListScreenRoot(
     onSettingsClick: () -> Unit,
-
+    onNavigateAddEntryScreen : (String) -> Unit,
     viewModel: EntriesViewModel = org.koin.androidx.compose.koinViewModel()
 
 ) {
+
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            is EntriesEvent.OnSavedAudio -> {
+                onNavigateAddEntryScreen(event.audioFilePath)
+            }
+        }
+    }
 
     EntriesListScreen(
         state = viewModel.state,
@@ -77,10 +88,6 @@ private fun EntriesListScreen(
     state: EntriesState,
     onAction: (EntriesAction) -> Unit
 ) {
-    val entriesList = listOf<String>(
-        "Echo 1",
-        "Echo 2",
-    )
     val skipPartiallyExpanded by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = skipPartiallyExpanded,
@@ -112,6 +119,7 @@ private fun EntriesListScreen(
 
                 onSaveRecording = {
                     onAction(EntriesAction.onSaveRecording)
+
                 },
 
                 isRecording = state.isRecording,
@@ -190,13 +198,11 @@ private fun EntriesListScreen(
         ) {
 
 
-            if (entriesList.isEmpty()) {
+            if (state.filteredEntries.isEmpty()) {
                 NoEntries(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {
-
-
                 LazyColumn(
                     modifier = Modifier
                         .padding(
@@ -206,7 +212,7 @@ private fun EntriesListScreen(
                             top = 56.dp
                         )
                 ) {
-                    items(3) { it ->
+                    items(state.filteredEntries) { it ->
                         EntriesListDayView(
                             onClickPlay = {
                                 onAction(EntriesAction.onPlayAudio(it))
@@ -233,8 +239,7 @@ private fun EntriesListScreen(
                             ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        EntriesListFilterChip(
-                            showIcons = true,
+                        EntriesListMoodFilterChip(
                             title = "All Moods",
                             selectedList = state.selectedMoods,
                             isActive = state.isAllMoodsOpen,
@@ -243,8 +248,7 @@ private fun EntriesListScreen(
                             }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        EntriesListFilterChip(
-                            showIcons = false,
+                        EntriesListTopicFilterChip(
                             selectedList = state.selectedTopics,
                             isActive = state.isAllTopicsOpen,
                             onClick = {
@@ -254,22 +258,19 @@ private fun EntriesListScreen(
                         )
                     }
                     Box {
-                        SelectableFilterList(
+                        SelectableMoodFilterList(
                             itemList = allMoodsList,
                             isVisible = state.isAllMoodsOpen,
-                            selectedItemList = state.selectedMoods.map {
-                                it.second
-                            },
+                            selectedItemList = state.selectedMoods,
                             onClick = { item ->
                                 onAction(EntriesAction.onSelectFilterMoods(item))
                             }
                         )
-                        SelectableFilterList(
-                            itemList = allTopicsList,
+
+                        SelectableTopicFilterList(
+                            itemList = state.topics,
                             isVisible = state.isAllTopicsOpen,
-                            selectedItemList = state.selectedTopics.map {
-                                it.second
-                            },
+                            selectedItemList = state.selectedTopics,
                             onClick = { item ->
                                 onAction(EntriesAction.onSelectFilterTopics(item))
 
