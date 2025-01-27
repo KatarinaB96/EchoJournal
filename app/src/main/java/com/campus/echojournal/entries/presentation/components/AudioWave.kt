@@ -34,7 +34,7 @@ import com.linc.audiowaveform.AudioWaveform
 
 @Composable
 fun AudioWave(
-    index : Int,
+    amplitudes: List<Int> = listOf(),
     onClickPlay: (Int) -> Unit = {},
     onClickPause: (Int) -> Unit = {},
     onClickResume: (Int) -> Unit = {},
@@ -42,6 +42,8 @@ fun AudioWave(
 ) {
 
     var waveformProgress by remember { mutableStateOf(1F) }
+
+
     Row(
         modifier = modifier
             .height(40.dp)
@@ -62,8 +64,10 @@ fun AudioWave(
 
                 )
                 .clip(RoundedCornerShape(100.dp))
-                .background(Color.White).clickable {
-                     onClickPlay(1)                },
+                .background(Color.White)
+                .clickable {
+                    onClickPlay(1)
+                },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -84,41 +88,7 @@ fun AudioWave(
                     .height(32.dp),
                 spikeWidth = 3.dp,
                 spikePadding = 1.dp,
-                amplitudes = listOf(
-                    1,
-                    2,
-                    2,
-                    1,
-                    4,
-                    2,
-                    3,
-                    2,
-                    1,
-                    2,
-                    3,
-                    2,
-                    1,
-                    2,
-                    1,
-                    2,
-                    1,
-                    2,
-                    1,
-                    2,
-                    1,
-                    2,
-                    1,
-                    2,
-                    1,
-                    2,
-                    1,
-                    2,
-                    1,
-                    2,
-                    2,
-                    1,
-                    1
-                ),
+                amplitudes = amplitudes,
                 progress = waveformProgress,
                 onProgressChange = { waveformProgress = it },
             )
@@ -140,7 +110,10 @@ private fun AudioWavePreview() {
     EchoJournalTheme {
         Surface {
             AudioWave(
-                index = 1
+                onClickPlay = TODO(),
+                onClickPause = TODO(),
+                onClickResume = TODO(),
+                modifier = TODO(),
             )
         }
 

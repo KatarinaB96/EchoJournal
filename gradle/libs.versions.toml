@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.3"
+amplituda = "2.2.2"
 datastorePreferences = "1.1.1"
 kotlin = "2.0.21"
 coreKtx = "1.15.0"
@@ -22,6 +23,7 @@ junitKtx = "1.2.1"
 
 
 [libraries]
+amplituda = { module = "com.github.lincollincol:amplituda", version.ref = "amplituda" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

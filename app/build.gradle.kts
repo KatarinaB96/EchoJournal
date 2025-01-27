@@ -76,5 +76,7 @@ dependencies {
 
 
     implementation (libs.audiowaveform)
+    implementation(libs.amplituda)
+
 
 }

@@ -12,7 +12,8 @@ fun EntryEntity.toDomainModel(topics: List<Topic>): Entry {
         moodIndex = moodIndex,
         recordingPath = recordingPath,
         topics = topics,
-        description = description
+        description = description,
+        audioDuration = audioDuration
     )
 }
 
@@ -31,6 +32,7 @@ fun Entry.toInsertTopicEntity(): EntryEntity {
         moodIndex = moodIndex,
         recordingPath = recordingPath,
         description = description,
+        audioDuration = audioDuration
 
         )
 }
@@ -49,6 +51,7 @@ fun EntryWithTopics.toDomainModel(): Entry {
         moodIndex = entry.moodIndex,
         recordingPath = entry.recordingPath,
         description = entry.description,
+        audioDuration = entry.audioDuration,
         topics = topics.map { topicEntity ->
             Topic(
                 id = topicEntity.topicId ?: 0,

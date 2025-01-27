@@ -53,7 +53,8 @@ class NewEntryViewModel(
                             moodIndex = action.moodIndex,
                             recordingPath = action.recordingPath,
                             description = action.description,
-                            topics = action.topics
+                            topics = action.topics,
+                            audioDuration = 0
                         )
                     )
                 }
