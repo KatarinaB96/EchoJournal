@@ -1,5 +1,6 @@
 package com.campus.echojournal.entries.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,7 +46,7 @@ fun BottomSheetContent(
     modifier: Modifier = Modifier
 ) {
     var counter by remember { mutableStateOf(0) }
-
+    Log.d("BottomSheetContent", "Rendering BottomSheetContent. isRecording: $isRecording")
 
     LaunchedEffect(Unit) {
         onStartRecording()
@@ -54,6 +55,7 @@ fun BottomSheetContent(
         while (true) {
             delay(1000L)
             counter++
+            Log.d("BottomSheetContent", "Recording timer: $counter seconds")
         }
     }
 
