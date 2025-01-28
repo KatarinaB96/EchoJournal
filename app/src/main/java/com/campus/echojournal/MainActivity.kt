@@ -79,7 +79,6 @@ class MainActivity : ComponentActivity() {
                                 slideInHorizontally()
                             }
                         ) {
-                            //TODO: send recording
                             val args = it.toRoute<Route.AddEntryScreen>()
                             val viewModel = koinViewModel<NewEntryViewModel>()
                             NewEntryScreenRoot(
@@ -113,8 +112,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-
-
             }
         }
     }

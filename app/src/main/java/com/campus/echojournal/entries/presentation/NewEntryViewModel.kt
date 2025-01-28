@@ -42,9 +42,9 @@ class NewEntryViewModel(
         }
     }
 
-    fun onAction(action: EntryAction) {
+    fun onAction(action: NewEntryAction) {
         when (action) {
-            is EntryAction.OnAddEntry -> {
+            is NewEntryAction.OnAddNewEntry -> {
                 viewModelScope.launch {
                     repository.insertEntryWithTopics(
                         Entry(
@@ -56,6 +56,22 @@ class NewEntryViewModel(
                             topics = action.topics
                         )
                     )
+                }
+            }
+
+            NewEntryAction.OnCancel -> {
+                _state.update {
+                    it.copy(
+                        defaultTopics = emptyList(),
+                        savedMoodIndex = -1,
+                        showBackConfirmationDialog = true
+                    )
+                }
+            }
+
+            NewEntryAction.OnDismissDialog -> {
+                _state.update {
+                    it.copy(showBackConfirmationDialog = false) // Hide the dialog
                 }
             }
         }

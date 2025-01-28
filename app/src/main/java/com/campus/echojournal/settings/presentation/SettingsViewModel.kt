@@ -17,7 +17,7 @@ class SettingsViewModel(
     private val repository: JournalRepository,
     private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
-    private val _state = MutableStateFlow(TopicListState())
+    private val _state = MutableStateFlow(SettingsState())
 
     val state = combine(
         _state,
@@ -43,9 +43,9 @@ class SettingsViewModel(
         }
     }
 
-    fun onAction(action: TopicListAction) {
+    fun onAction(action: SettingsAction) {
         when (action) {
-            is TopicListAction.OnAddTopic -> {
+            is SettingsAction.OnAddTopic -> {
                 viewModelScope.launch {
                     repository.addTopic(
                         Topic(
@@ -57,19 +57,22 @@ class SettingsViewModel(
                 }
             }
 
-            is TopicListAction.OnDeleteTopic -> {
+            is SettingsAction.OnDeleteTopic -> {
                 viewModelScope.launch {
                     repository.deleteTopicById(action.id)
                 }
             }
 
-            is TopicListAction.OnMoodIndexChanged -> {
+            is SettingsAction.OnMoodIndexChanged -> {
                 viewModelScope.launch {
                     dataStoreManager.saveSelectedMoodIndex(action.index)
                 }
                 _state.update {
                     it.copy(savedMoodIndex = action.index)
                 }
+            }
+
+            SettingsAction.OnBack -> {
             }
         }
     }
