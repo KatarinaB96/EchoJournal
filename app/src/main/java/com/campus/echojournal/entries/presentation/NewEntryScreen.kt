@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -68,7 +69,9 @@ import com.campus.echojournal.entries.util.allMoodsList
 import com.campus.echojournal.settings.presentation.components.SelectableMood
 import com.campus.echojournal.ui.theme.Background
 import com.campus.echojournal.ui.theme.BlueGradient1
+import com.campus.echojournal.ui.theme.ErrorContainer
 import com.campus.echojournal.ui.theme.InverseOnSurface
+import com.campus.echojournal.ui.theme.OnErrorContainer
 import com.campus.echojournal.ui.theme.OnPrimary
 import com.campus.echojournal.ui.theme.OnSurface
 import com.campus.echojournal.ui.theme.Outline
@@ -89,6 +92,8 @@ fun NewEntryScreenRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     NewEntryScreen(
+        onBackClick,
+        path = path,
         state = state,
         onAction = { action ->
             viewModel.onAction(action)
@@ -99,8 +104,10 @@ fun NewEntryScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewEntryScreen(
+    onBackClick: () -> Unit,
+    path: String,
     state: EntryState,
-    onAction: (EntryAction) -> Unit
+    onAction: (NewEntryAction) -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -118,7 +125,9 @@ fun NewEntryScreen(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
                 title = { Text(text = stringResource(R.string.new_entry), color = OnSurface) },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = {
+                        onAction(NewEntryAction.OnCancel)
+                    }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_back),
                             tint = MaterialTheme.colorScheme.secondary,
@@ -162,14 +171,14 @@ fun NewEntryScreen(
             ButtonRow(
                 text = stringResource(R.string.save),
                 onCancelClick = {
-                    TODO()
+                    onAction(NewEntryAction.OnCancel)
                 },
                 onButtonClick = {
                     onAction(
-                        EntryAction.OnAddEntry(
+                        NewEntryAction.OnAddNewEntry(
                             title = title,
                             moodIndex = moodIndex,
-                            recordingPath = "", //TODO()
+                            recordingPath = path,
                             topics = selectedTopics,
                             description = description
                         )
@@ -178,6 +187,10 @@ fun NewEntryScreen(
                 isButtonEnabled = title.isNotEmpty() && moodIndex != -1,
                 showIcon = false
             )
+
+            if (state.showBackConfirmationDialog) {
+                ConfirmExitDialog(onAction, onBackClick)
+            }
         }
     }
 
@@ -192,6 +205,41 @@ fun NewEntryScreen(
             }
         )
     }
+
+}
+
+@Composable
+fun ConfirmExitDialog(onAction: (NewEntryAction) -> Unit, onBackClick: () -> Unit) {
+    AlertDialog(
+        containerColor = ErrorContainer,
+        onDismissRequest = {
+            onAction(NewEntryAction.OnDismissDialog)
+        },
+        title = { Text(stringResource(R.string.confirm_exit), style = MaterialTheme.typography.titleMedium, color = OnErrorContainer) },
+        text = { Text(stringResource(R.string.dialog_subtitle), style = MaterialTheme.typography.labelSmall, color = OnSurface) },
+        confirmButton = {
+            Box(
+                modifier = Modifier
+                    .width(101.dp)
+            ) {
+                GradientButton(
+                    text = stringResource(R.string.exit),
+                    isEnabled = true,
+                    onClick = {
+                        onAction(NewEntryAction.OnDismissDialog)
+                        onBackClick()
+                    },
+                    showIcon = false
+                )
+            }
+        },
+        dismissButton = {
+            CancelButton(onClick =
+            {
+                onAction(NewEntryAction.OnDismissDialog)
+            })
+        }
+    )
 }
 
 @Composable
@@ -459,6 +507,11 @@ fun DescriptionTextField(
             )
         }
     }
+}
 
+@Composable
+@Preview
+fun AlertDialogPreview() {
+    ConfirmExitDialog({}, {})
 }
 
