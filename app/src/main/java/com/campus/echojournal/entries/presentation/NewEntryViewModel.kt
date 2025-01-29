@@ -20,13 +20,11 @@ class NewEntryViewModel(
     private val application: Application,
     private val repository: JournalRepository,
     private val dataStoreManager: DataStoreManager,
+    private val player: AndroidAudioPlayer
 
-    ) : ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow(EntryState())
 
-    private val player by lazy {
-        AndroidAudioPlayer(application)
-    }
 
     val state = combine(
         _state,

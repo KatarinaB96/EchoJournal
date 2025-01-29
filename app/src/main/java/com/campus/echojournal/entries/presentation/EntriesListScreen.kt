@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -47,6 +46,10 @@ import com.campus.echojournal.ui.ObserveAsEvents
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun EntriesListScreenRoot(
@@ -59,6 +62,8 @@ fun EntriesListScreenRoot(
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             is EntriesEvent.OnSavedAudio -> {
+                viewModel.onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
+
                 onNavigateAddEntryScreen(event.audioFilePath)
             }
         }
@@ -209,10 +214,19 @@ private fun EntriesListScreen(
                             top = 56.dp
                         )
                 ) {
-                    items(state.filteredEntries) { it ->
+                    val groupedByDate = state.filteredEntries.groupBy { item ->
+                        Instant.ofEpochMilli(item.createdDate)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                    }
+
+                    items(groupedByDate.size) { it ->
                         EntriesListDayView(
-                            onClickPlay = {
-                                onAction(EntriesAction.onPlayAudio(it))
+                            date =
+                            formatDate(groupedByDate.keys.elementAt(it).toString()),
+
+                            onClickPlay = { id ->
+                                onAction(EntriesAction.onPlayAudio(id))
                             },
                             onClickPause = {
                                 onAction(EntriesAction.onPauseAudio(it))
@@ -220,6 +234,11 @@ private fun EntriesListScreen(
                             onClickResume = {
                                 onAction(EntriesAction.onResumeAudio(it))
                             },
+                            entries = groupedByDate.values.elementAt(it).toList(),
+                            getAudioAmplitudes = { path ->
+                               println(path)
+                                emptyList()
+                            }
                         )
                     }
                 }
@@ -282,6 +301,19 @@ private fun EntriesListScreen(
         }
 
 
+    }
+}
+
+fun formatDate(dateString: String): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val date = LocalDate.parse(dateString, formatter)
+    val today = LocalDate.now()
+    val yesterday = today.minusDays(1)
+
+    return when (date) {
+        today -> "Today"
+        yesterday -> "Yesterday"
+        else -> date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
     }
 }
 

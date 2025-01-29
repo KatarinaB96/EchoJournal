@@ -14,25 +14,30 @@ class AndroidAudioPlayer(
 ) : AudioPlayer {
 
     private var player: MediaPlayer? = null
+    var isPlaying = false
 
     override fun playFile(file: File) {
         MediaPlayer.create(context, file.toUri()).apply {
             player = this
             start()
         }
+        isPlaying = true
     }
 
     override fun stop() {
+        isPlaying = false
         player?.stop()
         player?.release()
         player = null
     }
 
     override fun pause() {
+        isPlaying = false
         player?.pause()
     }
 
     override fun resume() {
+        isPlaying = true
         player?.let {
             if (!it.isPlaying) {
                 it.start()
@@ -56,7 +61,7 @@ class AndroidAudioPlayer(
     override fun getCurrentPosition(): Flow<Int> = flow {
         while (player != null) {
             emit((player?.currentPosition ?: 0) / 1000)
-            delay(1000)
+            delay(500)
         }
     }
 

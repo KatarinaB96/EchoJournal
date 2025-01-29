@@ -18,6 +18,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,18 +32,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.campus.echojournal.R
+import com.campus.echojournal.core.domain.models.Entry
+import com.campus.echojournal.entries.presentation.util.AudioWaveManager
+import com.campus.echojournal.entries.util.allMoodsList
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.LineColor
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun EntryItem(
+    entry : Entry,
     onClickPlay : (Int) -> Unit = {},
     onClickPause : (Int) -> Unit = {},
     onClickResume : (Int) -> Unit = {},
     index: Int = 0,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+    val audioWaveManager: AudioWaveManager = koinInject()
+
+    var amplitudes by remember {
+        mutableStateOf(emptyList<Int>())
+    }
+
+     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(true) {
+        coroutineScope.launch {
+            amplitudes = audioWaveManager.getAmplitudes(entry.recordingPath)
+        }
+    }
 
     val scrollState = rememberScrollState()
     Row(modifier = modifier.height(IntrinsicSize.Max)) {
@@ -55,8 +82,8 @@ fun EntryItem(
 
             Image(
                 modifier = Modifier.padding(top = 16.dp),
-                painter = painterResource(id = R.drawable.mood_neutral_active_on),
-                contentDescription = "Mood Neutral Active On"
+                painter = painterResource(id = allMoodsList.get(entry.moodIndex).first),
+                contentDescription = allMoodsList.get(entry.moodIndex).second
             )
         }
 
@@ -83,19 +110,22 @@ fun EntryItem(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        "My Entry", fontWeight = FontWeight.W500
+                        entry.title, fontWeight = FontWeight.W500
                     )
-                    Text("19:42")
+                    Text(formatTimeFromLong(entry.createdDate))
 
                 }
                 AudioWave(
                     onClickPlay = onClickPlay,
                     onClickPause = onClickPause,
                     onClickResume = onClickResume,
-
+                    audioDuration = entry.audioDuration,
+                    id = entry.id,
+                    amplitudes = amplitudes,
+                    moodIndex = entry.moodIndex
                 )
                 Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed tdeades,Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed ",
+                    entry.description,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 3
                 )
@@ -105,11 +135,11 @@ fun EntryItem(
                     )
                 ) {
                     repeat(
-                        4
+                        entry.topics.size
                     ) {
                         EntriesTopicChip(
                             modifier = Modifier.padding(2.dp),
-                            title = "Work"
+                            title = entry.topics[it].name
                         )
 
                     }
@@ -123,10 +153,33 @@ fun EntryItem(
 
 }
 
+
+
+// TODO: Move to a common place
+
+fun formatTimeFromLong(timestamp: Long, zoneId: ZoneId = ZoneId.systemDefault()): String {
+    return Instant.ofEpochMilli(timestamp)
+        .atZone(zoneId)
+        .format(DateTimeFormatter.ofPattern("HH:mm"))
+}
+
+
+
 @Preview
 @Composable
 private fun EntryItemPreview() {
     EchoJournalTheme {
-        EntryItem()
+        EntryItem(
+            entry = Entry(
+                id = 0,
+                title = "Title",
+                moodIndex = 0,
+                recordingPath = "",
+                topics = emptyList(),
+                description = "Description",
+                audioDuration = 0,
+
+            )
+        )
     }
 }

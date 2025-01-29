@@ -1,5 +1,6 @@
 package com.campus.echojournal.entries.di
 
+import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.entries.presentation.EntriesViewModel
 import com.campus.echojournal.entries.presentation.util.AudioWaveManager
 import kotlinx.coroutines.Dispatchers
@@ -13,13 +14,13 @@ val entriesModule = module {
     single {
         Amplituda(androidApplication())
     }
-
     single { Dispatchers.IO }
-
     single { AudioWaveManager(get(), get()) }
-    viewModel { NewEntryViewModel(get(), get(), get()) }
+    single { AndroidAudioPlayer(androidApplication()) }
+
+    viewModel { NewEntryViewModel(get(), get(), get() , get()) }
     viewModel{
-        EntriesViewModel(androidApplication(), get())
+        EntriesViewModel(androidApplication(), get() , get())
     }
 
 }
