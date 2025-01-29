@@ -12,13 +12,13 @@ import com.campus.echojournal.core.domain.models.Entry
 import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.core.utils.recorder.AndroidAudioRecorder
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.time.Duration
 
 class EntriesViewModel(
     private val application: Application,
@@ -50,22 +50,18 @@ class EntriesViewModel(
     private var audioFile: File? = null
 
     fun onAction(action: EntriesAction) {
-        Log.d("Widget", "EntriesViewModel onAction called with: $action")
         when (action) {
             EntriesAction.onStartRecording -> {
-                Log.d("Widget", "EntriesViewModel Starting recording")
                 state = state.copy(
                     isRecording = true
                 )
                 File(application.cacheDir, "audio_${System.currentTimeMillis()}.mp3").also {
                     recorder.start(it)
                     audioFile = it
-                    Log.d("Widget", " EntriesViewModel Recording started at: ${it.absolutePath}")
                 }
             }
 
             EntriesAction.onCancelRecording -> {
-                Log.d("Widget", "EntriesViewModel Canceling recording")
                 state = state.copy(
                     isRecording = false,
                 )
@@ -73,9 +69,8 @@ class EntriesViewModel(
             }
 
             EntriesAction.onClickAddEntry -> {
-                Log.d("Widget",  " EntriesViewModel Opening bottom sheet")
                 state = state.copy(
-                    isRecordAudioBottomSheetOpen = true
+                    isRecordAudioBottomSheetOpen = true,
                 )
             }
 
@@ -130,13 +125,16 @@ class EntriesViewModel(
 
             EntriesAction.onSaveRecording -> {
                 viewModelScope.launch {
+                    recorder.stop()
+                    delay(300)
+                    val duration = audioFile?.let { player.getDuration(it) } ?: Duration.ZERO
                     state = state.copy(
                         isRecording = false,
-                        audioFileUri = audioFile?.absolutePath ?: ""
+                        audioFileUri = audioFile?.absolutePath ?: "",
+                        audioDuration = duration
                     )
                     recorder.stop()
-
-                    eventChannel.send(EntriesEvent.OnSavedAudio(audioFile?.absolutePath ?: ""))
+                    eventChannel.send(EntriesEvent.OnSavedAudio(audioFile?.absolutePath ?: "", duration))
                 }
 
             }
@@ -151,7 +149,7 @@ class EntriesViewModel(
                     selectedMoods.add(selectedMood) // add to selected
                 }
 
-                val filteredEntries =  filterEntries()
+                val filteredEntries = filterEntries()
 
 
                 state = state.copy(
@@ -170,7 +168,7 @@ class EntriesViewModel(
                     }) { // remove if already selected
                     selectedTopics.add(item) // add to selected
                 }
-                val filteredEntries =  filterEntries()
+                val filteredEntries = filterEntries()
                 state = state.copy(
                     selectedTopics = selectedTopics,
                     filteredEntries = filteredEntries
@@ -189,7 +187,6 @@ class EntriesViewModel(
 
             EntriesAction.loadEntries -> {
                 // Load entries
-
 
             }
 
@@ -214,7 +211,7 @@ class EntriesViewModel(
     }
 
     fun setStartRecording(startRecording: Boolean) {
-        if (startRecording){
+        if (startRecording) {
             state = state.copy(
                 isRecordAudioBottomSheetOpen = true
             )

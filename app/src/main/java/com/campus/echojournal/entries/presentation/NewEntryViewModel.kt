@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
+
 
 class NewEntryViewModel(
     private val application: Application,
@@ -63,7 +63,7 @@ class NewEntryViewModel(
                             recordingPath = action.recordingPath,
                             description = action.description,
                             topics = action.topics,
-                            audioDuration = player.getDuration(File(action.recordingPath))
+                            audioDuration = action.recordingDuration
                         )
                     )
                 }

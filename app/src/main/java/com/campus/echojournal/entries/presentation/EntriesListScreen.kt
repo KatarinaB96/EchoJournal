@@ -47,11 +47,12 @@ import com.campus.echojournal.ui.ObserveAsEvents
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor1
 import com.campus.echojournal.ui.theme.GradientColor2
+import kotlin.time.Duration
 
 @Composable
 fun EntriesListScreenRoot(
     onSettingsClick: () -> Unit,
-    onNavigateAddEntryScreen : (String) -> Unit,
+    onNavigateAddEntryScreen: (String, Duration) -> Unit,
     viewModel: EntriesViewModel = org.koin.androidx.compose.koinViewModel()
 
 ) {
@@ -59,7 +60,7 @@ fun EntriesListScreenRoot(
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             is EntriesEvent.OnSavedAudio -> {
-                onNavigateAddEntryScreen(event.audioFilePath)
+                onNavigateAddEntryScreen(event.audioFilePath, event.audioDuration)
             }
         }
     }
@@ -169,9 +170,7 @@ private fun EntriesListScreen(
                         onAction(EntriesAction.onSaveRecording)
                     },
                     onCloseBottomSheet = {
-                            onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
-
-
+                        onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
                     },
                     isRecording = state.isRecording
                 )

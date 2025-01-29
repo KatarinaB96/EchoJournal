@@ -8,6 +8,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class AndroidAudioPlayer(
     private val context: Context
@@ -40,17 +42,11 @@ class AndroidAudioPlayer(
         }
     }
 
-    override fun getDuration(file: File): Int {
+    override fun getDuration(file: File): Duration {
         val retriever = MediaMetadataRetriever()
-        return try {
-            retriever.setDataSource(context, file.toUri())
-            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            duration?.toInt()?.div(1000) ?: 0
-        } catch (e: Exception) {
-            0
-        } finally {
-            retriever.release()
-        }
+        retriever.setDataSource(file.absolutePath)
+        val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0
+        return durationMs.milliseconds
     }
 
     override fun getCurrentPosition(): Flow<Int> = flow {

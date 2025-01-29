@@ -92,7 +92,10 @@ fun EntryItem(
                     onClickPlay = onClickPlay,
                     onClickPause = onClickPause,
                     onClickResume = onClickResume,
-
+                    amplitudes = listOf(1,2,3),
+                    audioDuration = "50",
+                    currentDuration = "0:00",
+                    modifier = Modifier,
                 )
                 Text(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed tdeades,Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed ",

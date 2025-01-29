@@ -86,6 +86,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun NewEntryScreenRoot(
     path: String,
+    duration: String,
     viewModel: NewEntryViewModel = koinViewModel(),
     onBackClick: () -> Unit
 ) {
@@ -94,6 +95,7 @@ fun NewEntryScreenRoot(
     NewEntryScreen(
         onBackClick,
         path = path,
+        duration = duration,
         state = state,
         onAction = { action ->
             viewModel.onAction(action)
@@ -106,6 +108,7 @@ fun NewEntryScreenRoot(
 fun NewEntryScreen(
     onBackClick: () -> Unit,
     path: String,
+    duration: String,
     state: EntryState,
     onAction: (NewEntryAction) -> Unit
 ) {
@@ -153,9 +156,8 @@ fun NewEntryScreen(
             )
 
             AudioWave(
-                audioDuration = "0",
+                audioDuration = duration,
                 currentDuration = "0",
-
             )
             Spacer(Modifier.height(16.dp))
             TopicPicker(
@@ -181,9 +183,9 @@ fun NewEntryScreen(
                             title = title,
                             moodIndex = moodIndex,
                             recordingPath = path,
+                            recordingDuration = duration,
                             topics = selectedTopics,
                             description = description,
-
                         )
                     )
                 },

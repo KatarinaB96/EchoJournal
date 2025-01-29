@@ -7,6 +7,7 @@ sealed interface NewEntryAction {
         val title: String,
         val moodIndex: Int,
         val recordingPath: String,
+        val recordingDuration: String,
         val description: String,
         val topics: List<Topic>,
     ) : NewEntryAction

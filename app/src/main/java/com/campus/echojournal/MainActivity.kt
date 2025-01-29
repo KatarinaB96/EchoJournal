@@ -28,6 +28,7 @@ import com.campus.echojournal.settings.presentation.SettingsScreenRoot
 import com.campus.echojournal.settings.presentation.SettingsViewModel
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import org.koin.androidx.compose.koinViewModel
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,8 +67,13 @@ class MainActivity : ComponentActivity() {
                                 onSettingsClick = {
                                     navController.navigate(Route.SettingsScreen)
                                 },
-                                onNavigateAddEntryScreen = { fileUri ->
-                                    navController.navigate(Route.AddEntryScreen(fileUri))
+                                onNavigateAddEntryScreen = { fileUri, duration ->
+                                    val totalSeconds = duration.inWholeSeconds
+                                    val minutes = totalSeconds / 60
+                                    val seconds = totalSeconds % 60
+
+                                    val formattedDuration = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+                                    navController.navigate(Route.AddEntryScreen(fileUri, formattedDuration))
                                 }
                             )
                         }
@@ -81,6 +87,8 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val args = it.toRoute<Route.AddEntryScreen>()
                             val viewModel = koinViewModel<NewEntryViewModel>()
+                            Log.d("duration", "$args.fileDuration in mainActivity")
+
                             NewEntryScreenRoot(
                                 viewModel = viewModel,
                                 onBackClick = {
@@ -90,7 +98,8 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Route.HomeScreen)
                                     }
                                 },
-                                path = args.fileUri
+                                path = args.fileUri,
+                                duration = args.duration
                             )
                         }
                         composable<Route.SettingsScreen>(
