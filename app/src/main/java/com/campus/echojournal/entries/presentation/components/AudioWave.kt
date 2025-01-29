@@ -35,6 +35,9 @@ import com.linc.audiowaveform.AudioWaveform
 @Composable
 fun AudioWave(
     amplitudes: List<Int> = listOf(),
+    audioDuration : String,
+    currentDuration : String,
+
     onClickPlay: (Int) -> Unit = {},
     onClickPause: (Int) -> Unit = {},
     onClickResume: (Int) -> Unit = {},
@@ -96,7 +99,7 @@ fun AudioWave(
 
         Text(
             modifier = Modifier.padding(end = 8.dp),
-            text = "0:00/12:30",
+            text = "0:00/" + audioDuration,
             color = Color.Black
         )
 
@@ -110,10 +113,14 @@ private fun AudioWavePreview() {
     EchoJournalTheme {
         Surface {
             AudioWave(
-                onClickPlay = TODO(),
-                onClickPause = TODO(),
-                onClickResume = TODO(),
-                modifier = TODO(),
+
+                amplitudes = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+                onClickPlay = {},
+                onClickPause = {},
+                onClickResume =  {},
+                audioDuration = "12:30",
+                currentDuration = "0:00",
+                modifier =  Modifier
             )
         }
 

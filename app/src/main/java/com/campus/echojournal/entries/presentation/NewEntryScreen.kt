@@ -153,6 +153,8 @@ fun NewEntryScreen(
             )
 
             AudioWave(
+                audioDuration = "0",
+                currentDuration = "0",
 
             )
             Spacer(Modifier.height(16.dp))
