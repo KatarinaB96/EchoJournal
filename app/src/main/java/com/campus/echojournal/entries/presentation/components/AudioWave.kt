@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.campus.echojournal.R
 import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.ui.theme.EchoJournalTheme
@@ -60,6 +61,7 @@ fun AudioWave(
     audioDuration: Int,
     moodIndex: Int,
     id: Int = 0,
+    isActiveAudio : Boolean = false,
     onClickPlay: (Int) -> Unit = {},
     onClickPause: (Int) -> Unit = {},
     onClickResume: (Int) -> Unit = {},
@@ -67,6 +69,9 @@ fun AudioWave(
 ) {
 
     val player: AndroidAudioPlayer = koinInject()
+
+    val isPlaying by player.isPlaying.collectAsStateWithLifecycle()
+
 
     var currentPosition by remember {
         mutableStateOf(0)
@@ -104,9 +109,8 @@ fun AudioWave(
                 .clip(RoundedCornerShape(100.dp))
                 .background(Color.White)
                 .clickable {
-                    if (player.isPlaying) {
+                    if (isPlaying) {
                         onClickPause(id)
-
                     } else {
                         onClickPlay(id)
                         coroutineScope.launch {
@@ -124,7 +128,7 @@ fun AudioWave(
         ) {
 
             Icon(
-                painter = painterResource(if (player.isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
+                painter = painterResource(if (isPlaying && isActiveAudio) R.drawable.ic_pause else R.drawable.ic_play),
                 tint = getAudioWavePlayColor(moodIndex),
                 contentDescription = "Play",
                 )
@@ -137,21 +141,22 @@ fun AudioWave(
         )
         {
             AudioWaveform(
+
                 waveformBrush = SolidColor(getAuidoWaveNotPlayColor(moodIndex)),
                 progressBrush = SolidColor(getAudioWavePlayColor(moodIndex)),
                 modifier = Modifier
                     .height(32.dp),
-                spikeWidth = 3.dp,
-                spikePadding = 1.dp,
+                spikeWidth = 4.dp,
+                spikePadding = 2.dp,
                 amplitudes = amplitudes,
-                progress = waveformProgress,
+                progress = if(isActiveAudio) waveformProgress else 0f,
                 onProgressChange = { },
             )
         }
 
         Text(
             modifier = Modifier.padding(end = 8.dp),
-            text = formatSecondsToTime(currentPosition) + "/" + formatSecondsToTime(audioDuration),
+            text =  formatSecondsToTime(if(isActiveAudio) currentPosition else 0) + "/" + formatSecondsToTime(audioDuration),
             color = Color.Black,
             fontSize = 12.sp
         )

@@ -6,6 +6,8 @@ import android.media.MediaPlayer
 import androidx.core.net.toUri
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import java.io.File
 
@@ -14,35 +16,43 @@ class AndroidAudioPlayer(
 ) : AudioPlayer {
 
     private var player: MediaPlayer? = null
-    var isPlaying = false
+
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying
+
 
     override fun playFile(file: File) {
         MediaPlayer.create(context, file.toUri()).apply {
             player = this
             start()
         }
-        isPlaying = true
+        _isPlaying.value = true
+        player?.setOnCompletionListener {
+            _isPlaying.value = false
+        }
+
     }
 
     override fun stop() {
-        isPlaying = false
+        _isPlaying.value = false
         player?.stop()
         player?.release()
         player = null
     }
 
     override fun pause() {
-        isPlaying = false
+        _isPlaying.value = false
         player?.pause()
     }
 
     override fun resume() {
-        isPlaying = true
+        _isPlaying.value = true
         player?.let {
             if (!it.isPlaying) {
                 it.start()
             }
         }
+
     }
 
     override fun getDuration(file: File): Int {

@@ -12,6 +12,7 @@ data class EntriesState(
     val isRecordAudioBottomSheetOpen: Boolean = false,
     val isRecording: Boolean = false,
     val isPlaying: Boolean = false,
+    val playingEntryId : Int = -1,
     val entries: List<Entry> = emptyList(),
     val filteredEntries : List<Entry> = emptyList(),
     val topics: List<Topic> = emptyList(),

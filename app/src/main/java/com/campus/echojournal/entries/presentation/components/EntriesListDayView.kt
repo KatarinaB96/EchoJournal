@@ -13,6 +13,7 @@ import com.campus.echojournal.ui.theme.EchoJournalTheme
 
 @Composable
 fun EntriesListDayView(
+    playingEntryId : Int = -1,
     entries : List<Entry>,
     date : String,
     onClickPlay: (Int) -> Unit = {},
@@ -30,7 +31,7 @@ fun EntriesListDayView(
         )
         for(i in 0..<entries.size) {
             EntryItem(
-
+                playingEntryId = playingEntryId,
                 onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
                 onClickResume = onClickResume,

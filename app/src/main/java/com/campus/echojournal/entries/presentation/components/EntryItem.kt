@@ -46,6 +46,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun EntryItem(
     entry : Entry,
+    playingEntryId : Int = -1,
     onClickPlay : (Int) -> Unit = {},
     onClickPause : (Int) -> Unit = {},
     onClickResume : (Int) -> Unit = {},
@@ -122,7 +123,8 @@ fun EntryItem(
                     audioDuration = entry.audioDuration,
                     id = entry.id,
                     amplitudes = amplitudes,
-                    moodIndex = entry.moodIndex
+                    moodIndex = entry.moodIndex,
+                    isActiveAudio = entry.id == playingEntryId
                 )
                 Text(
                     entry.description,

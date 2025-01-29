@@ -109,14 +109,16 @@ class EntriesViewModel(
                 }
                 player.playFile(audioFile!!)
                 state = state.copy(
-                    isPlaying = true
+                    isPlaying = true,
+                    playingEntryId = action.id
                 )
             }
 
             is EntriesAction.onResumeAudio -> {
                 player.resume()
                 state = state.copy(
-                    isPlaying = true
+                    isPlaying = true,
+                    playingEntryId = action.id
                 )
             }
 

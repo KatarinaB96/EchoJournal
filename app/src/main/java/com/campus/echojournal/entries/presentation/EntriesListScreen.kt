@@ -222,6 +222,7 @@ private fun EntriesListScreen(
                         EntriesListDayView(
                             date =
                             formatDate(groupedByDate.keys.elementAt(it).toString()),
+                            playingEntryId = state.playingEntryId,
 
                             onClickPlay = { id ->
                                 onAction(EntriesAction.onPlayAudio(id))
