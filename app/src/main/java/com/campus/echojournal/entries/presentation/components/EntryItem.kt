@@ -92,7 +92,7 @@ fun EntryItem(
                     onClickPlay = onClickPlay,
                     onClickPause = onClickPause,
                     onClickResume = onClickResume,
-                    index = index
+
                 )
                 Text(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed tdeades,Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tit amet, consectetur adipiscing elit, sed ",
