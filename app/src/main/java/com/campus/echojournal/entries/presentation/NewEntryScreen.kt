@@ -153,7 +153,7 @@ fun NewEntryScreen(
             )
 
             AudioWave(
-                index = 1
+
             )
             Spacer(Modifier.height(16.dp))
             TopicPicker(
@@ -180,7 +180,8 @@ fun NewEntryScreen(
                             moodIndex = moodIndex,
                             recordingPath = path,
                             topics = selectedTopics,
-                            description = description
+                            description = description,
+
                         )
                     )
                 },

@@ -17,10 +17,7 @@ val entriesModule = module {
     single { Dispatchers.IO }
 
     single { AudioWaveManager(get(), get()) }
-
-    viewModel {
-        EntriesViewModel(androidApplication())
-    viewModel { NewEntryViewModel(get(), get()) }
+    viewModel { NewEntryViewModel(get(), get(), get()) }
     viewModel{
         EntriesViewModel(androidApplication(), get())
     }
