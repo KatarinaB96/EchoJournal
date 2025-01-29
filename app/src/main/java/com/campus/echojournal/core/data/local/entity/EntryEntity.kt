@@ -11,4 +11,5 @@ data class EntryEntity(
     val recordingPath: String,
     val description: String,
     val audioDuration: Int
+    val createdDate: Long = System.currentTimeMillis()
 )

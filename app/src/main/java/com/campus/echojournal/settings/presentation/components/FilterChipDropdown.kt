@@ -53,8 +53,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.campus.echojournal.R
 import com.campus.echojournal.core.domain.models.Topic
-import com.campus.echojournal.settings.presentation.TopicListAction
-import com.campus.echojournal.settings.presentation.TopicListState
+import com.campus.echojournal.settings.presentation.SettingsAction
+import com.campus.echojournal.settings.presentation.SettingsState
 import com.campus.echojournal.ui.theme.Gray6
 import com.campus.echojournal.ui.theme.OnErrorContainer
 import com.campus.echojournal.ui.theme.OnSurface
@@ -64,8 +64,8 @@ import com.campus.echojournal.ui.theme.Secondary
 
 @Composable
 fun FilterChipDropdown(
-    state: TopicListState,
-    onAction: (TopicListAction) -> Unit,
+    state: SettingsState,
+    onAction: (SettingsAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val suggestions by remember { mutableStateOf(setOf("Work", "Hobby", "Personal", "Office", "Family", "Friends", "Workout")) }
@@ -89,7 +89,7 @@ fun FilterChipDropdown(
             focusRequester = focusRequester,
             showWarning = { showWarning = it },
             onDelete = {
-                onAction(TopicListAction.OnDeleteTopic(it))
+                onAction(SettingsAction.OnDeleteTopic(it))
             }
         )
 
@@ -97,7 +97,7 @@ fun FilterChipDropdown(
 
         TopicDropdown(
             onSaveTopics = {
-                onAction(TopicListAction.OnAddTopic(it))
+                onAction(SettingsAction.OnAddTopic(it))
             },
             selectedTopics = state.topics,
             modifier = modifier,
@@ -420,5 +420,5 @@ fun TopicChip(
 @Composable
 @Preview
 fun FilterChipDropdownPreview() {
-
+    FilterChipDropdown(SettingsState(), {}, Modifier)
 }

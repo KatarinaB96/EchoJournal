@@ -23,15 +23,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.campus.echojournal.R
-import com.campus.echojournal.settings.presentation.TopicListAction
-import com.campus.echojournal.settings.presentation.TopicListState
+import com.campus.echojournal.settings.presentation.SettingsAction
+import com.campus.echojournal.settings.presentation.SettingsState
 import com.campus.echojournal.ui.theme.OnSurface
 import com.campus.echojournal.ui.theme.OnSurfaceVariant
 
 @Composable
 fun MoodCard(
-    state: TopicListState,
-    onAction: (TopicListAction) -> Unit
+    state: SettingsState,
+    onAction: (SettingsAction) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -66,7 +66,7 @@ fun MoodCard(
             SelectableMood(
                 savedMoodIndex = state.savedMoodIndex,
                 onMoodSelected = { index ->
-                    onAction(TopicListAction.OnMoodIndexChanged(index))
+                    onAction(SettingsAction.OnMoodIndexChanged(index))
                 })
         }
     }
@@ -121,5 +121,5 @@ fun SelectableMood(
 @Preview
 @Composable
 fun MoodCardPreview() {
-//    MoodCard()
+    MoodCard(SettingsState(), {})
 }

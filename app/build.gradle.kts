@@ -79,4 +79,23 @@ dependencies {
     implementation(libs.amplituda)
 
 
+    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.core.splashscreen)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.workmanager)
+    implementation(libs.koin.androidx.compose)
+
+    implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.glance.appwidget)
+
 }

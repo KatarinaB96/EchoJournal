@@ -35,6 +35,12 @@ fun SettingsScreenRoot(
     SettingsScreen(
         state = state,
         onAction = { action ->
+            when (action) {
+                SettingsAction.OnBack -> {
+                    onBackClick()
+                }
+                else -> Unit
+            }
             viewModel.onAction(action)
         },
     )
@@ -43,8 +49,8 @@ fun SettingsScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    state: TopicListState,
-    onAction: (TopicListAction) -> Unit,
+    state: SettingsState,
+    onAction: (SettingsAction) -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -53,7 +59,7 @@ fun SettingsScreen(
             },
             navigationIcon = {
                 IconButton(onClick = {
-
+                    onAction(SettingsAction.OnBack)
                 }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_back),
@@ -84,5 +90,5 @@ fun SettingsScreen(
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    SettingsScreen(state = TopicListState(), {})
+    SettingsScreen(state = SettingsState(), {})
 }

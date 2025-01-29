@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -64,10 +65,13 @@ import com.campus.echojournal.R
 import com.campus.echojournal.core.domain.models.Topic
 import com.campus.echojournal.entries.presentation.components.AudioWave
 import com.campus.echojournal.entries.presentation.components.TopicPicker
+import com.campus.echojournal.entries.util.allMoodsList
 import com.campus.echojournal.settings.presentation.components.SelectableMood
 import com.campus.echojournal.ui.theme.Background
 import com.campus.echojournal.ui.theme.BlueGradient1
+import com.campus.echojournal.ui.theme.ErrorContainer
 import com.campus.echojournal.ui.theme.InverseOnSurface
+import com.campus.echojournal.ui.theme.OnErrorContainer
 import com.campus.echojournal.ui.theme.OnPrimary
 import com.campus.echojournal.ui.theme.OnSurface
 import com.campus.echojournal.ui.theme.Outline
@@ -81,12 +85,15 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NewEntryScreenRoot(
+    path: String,
     viewModel: NewEntryViewModel = koinViewModel(),
     onBackClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     NewEntryScreen(
+        onBackClick,
+        path = path,
         state = state,
         onAction = { action ->
             viewModel.onAction(action)
@@ -97,8 +104,10 @@ fun NewEntryScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewEntryScreen(
+    onBackClick: () -> Unit,
+    path: String,
     state: EntryState,
-    onAction: (EntryAction) -> Unit
+    onAction: (NewEntryAction) -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -116,7 +125,9 @@ fun NewEntryScreen(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
                 title = { Text(text = stringResource(R.string.new_entry), color = OnSurface) },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = {
+                        onAction(NewEntryAction.OnCancel)
+                    }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_back),
                             tint = MaterialTheme.colorScheme.secondary,
@@ -141,7 +152,9 @@ fun NewEntryScreen(
                 keyboardController = keyboardController
             )
 
-            AudioWave()
+            AudioWave(
+                index = 1
+            )
             Spacer(Modifier.height(16.dp))
             TopicPicker(
                 defaultTopics = state.defaultTopics,
@@ -158,14 +171,14 @@ fun NewEntryScreen(
             ButtonRow(
                 text = stringResource(R.string.save),
                 onCancelClick = {
-                    TODO()
+                    onAction(NewEntryAction.OnCancel)
                 },
                 onButtonClick = {
                     onAction(
-                        EntryAction.OnAddEntry(
+                        NewEntryAction.OnAddNewEntry(
                             title = title,
                             moodIndex = moodIndex,
-                            recordingPath = "", //TODO()
+                            recordingPath = path,
                             topics = selectedTopics,
                             description = description
                         )
@@ -174,6 +187,10 @@ fun NewEntryScreen(
                 isButtonEnabled = title.isNotEmpty() && moodIndex != -1,
                 showIcon = false
             )
+
+            if (state.showBackConfirmationDialog) {
+                ConfirmExitDialog(onAction, onBackClick)
+            }
         }
     }
 
@@ -188,6 +205,41 @@ fun NewEntryScreen(
             }
         )
     }
+
+}
+
+@Composable
+fun ConfirmExitDialog(onAction: (NewEntryAction) -> Unit, onBackClick: () -> Unit) {
+    AlertDialog(
+        containerColor = ErrorContainer,
+        onDismissRequest = {
+            onAction(NewEntryAction.OnDismissDialog)
+        },
+        title = { Text(stringResource(R.string.confirm_exit), style = MaterialTheme.typography.titleMedium, color = OnErrorContainer) },
+        text = { Text(stringResource(R.string.dialog_subtitle), style = MaterialTheme.typography.labelSmall, color = OnSurface) },
+        confirmButton = {
+            Box(
+                modifier = Modifier
+                    .width(101.dp)
+            ) {
+                GradientButton(
+                    text = stringResource(R.string.exit),
+                    isEnabled = true,
+                    onClick = {
+                        onAction(NewEntryAction.OnDismissDialog)
+                        onBackClick()
+                    },
+                    showIcon = false
+                )
+            }
+        },
+        dismissButton = {
+            CancelButton(onClick =
+            {
+                onAction(NewEntryAction.OnDismissDialog)
+            })
+        }
+    )
 }
 
 @Composable
@@ -199,13 +251,7 @@ fun AddTitleField(
     focusRequester: FocusRequester,
     keyboardController: SoftwareKeyboardController?
 ) {
-    val moods = listOf(
-        R.drawable.mood_stresses_active,
-        R.drawable.mood_sad_active_on,
-        R.drawable.mood_neutral_active_on,
-        R.drawable.mood_peaceful_active_on,
-        R.drawable.mood_excited_active_on,
-    )
+    val moods = allMoodsList.map { it.first }
 
     TextField(
         leadingIcon = {
@@ -461,6 +507,11 @@ fun DescriptionTextField(
             )
         }
     }
+}
 
+@Composable
+@Preview
+fun AlertDialogPreview() {
+    ConfirmExitDialog({}, {})
 }
 

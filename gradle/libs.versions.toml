@@ -1,15 +1,17 @@
 [versions]
 agp = "8.7.3"
 amplituda = "2.2.2"
-datastorePreferences = "1.1.1"
+datastorePreferences = "1.1.2"
+glance = "1.1.1"
+glanceAppwidget = "1.1.1"
 kotlin = "2.0.21"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.9.3"
-composeBom = "2024.12.01"
+activityCompose = "1.10.0"
+composeBom = "2025.01.00"
 uiTextGoogleFonts = "1.7.6"
 room = "2.6.1"
 ksp = "2.0.20-1.0.24"
@@ -26,6 +28,8 @@ junitKtx = "1.2.1"
 amplituda = { module = "com.github.lincollincol:amplituda", version.ref = "amplituda" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-glance = { module = "androidx.glance:glance", version.ref = "glance" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -54,6 +58,7 @@ audiowaveform = { group = "com.github.lincollincol", name = "compose-audiowavefo
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
