@@ -10,6 +10,6 @@ data class EntryEntity(
     val moodIndex: Int,
     val recordingPath: String,
     val description: String,
-    val audioDuration: Int
+    val audioDuration: Int,
     val createdDate: Long = System.currentTimeMillis()
 )
