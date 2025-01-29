@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -30,10 +29,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -55,49 +52,39 @@ import com.campus.echojournal.ui.theme.Secondary
 
 @Composable
 fun TopicPicker(
-    defaultTopics: List<Topic>,
-    onSaveTopics: (List<Topic>) -> Unit,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    topics: List<Topic>,
+    onAddTopicToList: (String) -> Unit,
+    onRemoveTopicFromList: (String) -> Unit
 ) {
     val suggestions by remember { mutableStateOf(setOf("Work", "Hobby", "Personal", "Office", "Family", "Friends", "Workout")) }
-    var isAddingTopic by remember { mutableStateOf(false) }
-    var searchQuery by remember { mutableStateOf("") }
-    var showWarning by remember { mutableStateOf(false) }
-
-    val selectedTopics = remember { mutableStateListOf<Topic>().apply { addAll(defaultTopics) } }
-
 
     Column(
         modifier = Modifier
             .wrapContentHeight()
     ) {
-
         TopicsList(
-            selectedTopics = selectedTopics,
+            selectedTopics = topics,
             searchQuery = searchQuery,
-            onSearchQueryChange = { searchQuery = it },
-            showWarning = { showWarning = it },
-            onDelete = {topicId ->
-                selectedTopics.removeIf { it.id == topicId }
-                onSaveTopics(selectedTopics)
+            onSearchQueryChange = { onSearchQueryChange(it) },
+            onDelete = { topic ->
+                onRemoveTopicFromList(topic)
             }
         )
 
-        if (searchQuery.isEmpty()) return
-
-        TopicDropdown(
-            selectedTopics = selectedTopics,
-            onAddTopicToList = { newTopicName ->
-                val newTopic = Topic(id = selectedTopics.size + 1, name = newTopicName, false)
-                selectedTopics.add(newTopic)
-                onSaveTopics(selectedTopics)
-            },
-            modifier = Modifier,
-            onAddingTopicChange = { isAddingTopic = it },
-            searchQuery = searchQuery,
-            onSearchQueryChange = { searchQuery = it },
-            suggestedTopics = suggestions,
-            showWarning = showWarning
-        )
+        if (searchQuery.isNotEmpty()) {
+            TopicDropdown(
+                selectedTopics = topics,
+                onAddTopicToList = { newTopicName ->
+                    onAddTopicToList(newTopicName)
+                },
+                modifier = Modifier,
+                searchQuery = searchQuery,
+                onSearchQueryChange = { onSearchQueryChange(it) },
+                suggestedTopics = suggestions
+            )
+        }
     }
 }
 
@@ -106,16 +93,17 @@ private fun TopicDropdown(
     selectedTopics: List<Topic>,
     onAddTopicToList: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onAddingTopicChange: (Boolean) -> Unit,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    suggestedTopics: Set<String>,
-    showWarning: Boolean
+    suggestedTopics: Set<String>
 ) {
-
-    val filterSuggestedTopics = suggestedTopics.filter { name ->
+    // Filter out already selected topics from the suggestions
+    val filteredSuggestedTopics = suggestedTopics.filter { name ->
         !selectedTopics.map { it.name }.contains(name)
     }
+
+    // Check if the search query matches any selected topic
+    val isDuplicate = selectedTopics.any { it.name.equals(searchQuery, ignoreCase = true) }
 
     Box(
         modifier = modifier
@@ -124,13 +112,13 @@ private fun TopicDropdown(
             .offset(y = -(8.dp))
             .shadow(elevation = 8.dp, shape = RoundedCornerShape(10.dp)),
     ) {
-
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .background(color = Color.White)
         ) {
-            if (showWarning) {
+            // Show warning message if search query is a duplicate
+            if (isDuplicate) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -151,12 +139,11 @@ private fun TopicDropdown(
                     )
                 }
             } else {
-
-                val matchingSavedTopics = filterSuggestedTopics.filter { name ->
+                val matchingSuggestedTopics = filteredSuggestedTopics.filter { name ->
                     name.startsWith(prefix = searchQuery, ignoreCase = true)
                 }
 
-                matchingSavedTopics.forEach { topic ->
+                matchingSuggestedTopics.forEach { topic ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -164,7 +151,6 @@ private fun TopicDropdown(
                                 onClick = {
                                     onAddTopicToList(topic)
                                     onSearchQueryChange("")
-                                    onAddingTopicChange(false)
                                 }
                             )
                             .padding(horizontal = 6.dp, vertical = 8.dp),
@@ -176,7 +162,7 @@ private fun TopicDropdown(
                             tint = Primary
                         )
 
-                        Spacer(Modifier.width(4.dp))
+                        Spacer(Modifier.width(8.dp))
 
                         Text(
                             text = topic,
@@ -186,7 +172,8 @@ private fun TopicDropdown(
                     }
                 }
 
-                if (!suggestedTopics.any { it.equals(searchQuery, ignoreCase = true) }) {
+                // Option to create a new topic if no matching suggestion exists
+                if (!isDuplicate && matchingSuggestedTopics.isEmpty()) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -194,7 +181,6 @@ private fun TopicDropdown(
                                 val newTopic = searchQuery.trim()
                                 onAddTopicToList(newTopic)
                                 onSearchQueryChange("")
-                                onAddingTopicChange(false)
                             }
                             .padding(horizontal = 2.dp, vertical = 4.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -204,13 +190,13 @@ private fun TopicDropdown(
                             imageVector = Icons.Default.Add,
                             modifier = Modifier.size(18.dp),
                             contentDescription = stringResource(R.string.add_topic),
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = Primary,
                         )
 
                         Text(
                             text = "Create '$searchQuery'",
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = Primary,
                         )
                     }
                 }
@@ -225,16 +211,23 @@ private fun TopicsList(
     selectedTopics: List<Topic>,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    showWarning: (Boolean) -> Unit,
-    onDelete: (Int) -> Unit
+    onDelete: (String) -> Unit,
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        // Display selected topics as chips
+        selectedTopics.forEach { topic ->
+            TopicChip(
+                modifier = Modifier.padding(end = 4.dp),
+                topic = topic,
+                onDelete = { onDelete(it) }
+            )
+        }
+
+        // Search query input field
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 painter = painterResource(R.drawable.ic_hashtag),
                 contentDescription = stringResource(R.string.icon_hashtag),
@@ -262,30 +255,10 @@ private fun TopicsList(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done,
                     ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            if (selectedTopics.map { it.name }.contains(searchQuery)) {
-                                showWarning(true)
-                            } else {
-                                showWarning(false)
-                            }
-                        }
-                    ),
                     textStyle = MaterialTheme.typography.bodyMedium
                 )
             }
         }
-
-        selectedTopics.forEach { topic ->
-            TopicChip(
-                modifier = Modifier.padding(end = 4.dp),
-                topic = topic,
-                onDelete = {
-                    onDelete(it)
-                }
-            )
-        }
-
     }
 }
 
@@ -293,7 +266,7 @@ private fun TopicsList(
 fun TopicChip(
     modifier: Modifier,
     topic: Topic,
-    onDelete: (Int) -> Unit = {},
+    onDelete: (String) -> Unit = {},
 ) {
     InputChip(
         modifier = modifier,
@@ -304,7 +277,7 @@ fun TopicChip(
         ),
         shape = RoundedCornerShape(100.dp),
         onClick = {
-            onDelete(topic.id)
+            onDelete(topic.name)
         },
         label = {
             Text(
@@ -325,7 +298,7 @@ fun TopicChip(
                 imageVector = Icons.Default.Close,
                 contentDescription = stringResource(R.string.remove_tag),
                 tint = OnSurfaceVariant.copy(alpha = 0.3f),
-                modifier = Modifier.clickable { onDelete(topic.id) },
+                modifier = Modifier.clickable { onDelete(topic.name) },
             )
         },
     )
@@ -335,6 +308,6 @@ fun TopicChip(
 @Preview
 fun FilterChipDropdownPreview() {
     MaterialTheme {
-        //        TopicPicker()
+        TopicPicker("Journal", {}, emptyList(), {}, {})
     }
 }

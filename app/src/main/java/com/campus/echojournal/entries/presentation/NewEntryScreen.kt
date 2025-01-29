@@ -41,7 +41,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -62,7 +61,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.campus.echojournal.R
-import com.campus.echojournal.core.domain.models.Topic
 import com.campus.echojournal.entries.presentation.components.AudioWave
 import com.campus.echojournal.entries.presentation.components.TopicPicker
 import com.campus.echojournal.entries.util.allMoodsList
@@ -116,7 +114,6 @@ fun NewEntryScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     var isSheetOpen by remember { mutableStateOf(false) }
-    var selectedTopics = remember { mutableStateListOf<Topic>() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -157,9 +154,17 @@ fun NewEntryScreen(
             )
             Spacer(Modifier.height(16.dp))
             TopicPicker(
-                defaultTopics = state.defaultTopics,
-                onSaveTopics = {
-                    selectedTopics.addAll(it)
+                state.searchQuery,
+                onSearchQueryChange = { query ->
+                    onAction(NewEntryAction.OnSearchQueryChanged(query))
+                },
+
+                topics = state.pickedTopics,
+                onAddTopicToList = {
+                    onAction(NewEntryAction.OnAddTopic(it))
+                },
+                onRemoveTopicFromList = {
+                    onAction(NewEntryAction.OnDeleteTopic(it))
                 }
             )
             Spacer(Modifier.height(16.dp))
@@ -179,10 +184,11 @@ fun NewEntryScreen(
                             title = title,
                             moodIndex = moodIndex,
                             recordingPath = path,
-                            topics = selectedTopics,
-                            description = description
+                            description = description,
+                            state.pickedTopics,
                         )
                     )
+                    onBackClick()
                 },
                 isButtonEnabled = title.isNotEmpty() && moodIndex != -1,
                 showIcon = false
