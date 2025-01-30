@@ -42,7 +42,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,7 +63,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.campus.echojournal.R
-import com.campus.echojournal.core.domain.models.Topic
 import com.campus.echojournal.entries.presentation.components.AudioWave
 import com.campus.echojournal.entries.presentation.components.TopicPicker
 import com.campus.echojournal.entries.presentation.util.AudioWaveManager
@@ -128,7 +126,6 @@ fun NewEntryScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     var isSheetOpen by remember { mutableStateOf(false) }
-    var selectedTopics = remember { mutableStateListOf<Topic>() }
 
 
     val audioWaveManager: AudioWaveManager = koinInject()

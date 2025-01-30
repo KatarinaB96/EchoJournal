@@ -77,7 +77,7 @@ class NewEntryViewModel(
                             recordingPath = action.recordingPath,
                             description = action.description,
 //                            topics = action.topics,
-                            audioDuration = _state.value.audioDuration
+                            audioDuration = _state.value.audioDuration,
                             topics = newTopics
                         )
                     )
