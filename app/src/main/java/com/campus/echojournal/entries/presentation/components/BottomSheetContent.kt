@@ -16,10 +16,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,9 +28,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.campus.echojournal.R
+import com.campus.echojournal.entries.presentation.util.Counter
 import com.campus.echojournal.ui.theme.EchoJournalTheme
 import com.campus.echojournal.ui.theme.GradientColor2
-import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
@@ -45,18 +44,13 @@ fun BottomSheetContent(
     isRecording: Boolean,
     modifier: Modifier = Modifier
 ) {
-    var counter by remember { mutableStateOf(0) }
+    val counterManager = remember {Counter()}
+    val counter by counterManager.counterFlow.collectAsState()
     Log.d("BottomSheetContent", "Rendering BottomSheetContent. isRecording: $isRecording")
 
     LaunchedEffect(Unit) {
         onStartRecording()
-    }
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(1000L)
-            counter++
-            Log.d("BottomSheetContent", "Recording timer: $counter seconds")
-        }
+        counterManager.start()
     }
 
     val formattedTime = remember(counter) {
@@ -98,6 +92,7 @@ fun BottomSheetContent(
         ) {
             BottomSheetIconButton(
                 onClick = {
+                    counterManager.reset()
                     onCancelRecording()
                     onCloseBottomSheet()
                 },
@@ -116,7 +111,10 @@ fun BottomSheetContent(
                     if (isRecording) {
                         onSaveRecording()
                         onCloseBottomSheet()
+                        counterManager.reset()
+
                     } else {
+                        counterManager.start()
                         onResumeRecording()
                     }
                 },
@@ -134,10 +132,12 @@ fun BottomSheetContent(
             BottomSheetIconButton(
                 onClick = {
                     if (isRecording) {
+                        counterManager.pause()
                         onPauseRecording()
                     } else {
                         onSaveRecording()
                         onCloseBottomSheet()
+                        counterManager.reset()
                     }
                 },
                 containerColor = GradientColor2,
