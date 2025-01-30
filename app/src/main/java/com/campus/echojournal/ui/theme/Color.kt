@@ -35,7 +35,7 @@ val BlueGradient1 = Color(0xFF578CFF)
 
 val Neutral_95 = Color(0xFFEEF7F3)
 val Excited_95 = Color(0xFFF5F2EF)
-val Peaceful_95 = Color(0xFFE5A87A)
+val Peaceful_95 = Color(0xFFF6F2F5)
 val Stressed_95 = Color(0xFFF8EFEF)
 val Sad_95 = Color(0xFFEFF4F8)
 
