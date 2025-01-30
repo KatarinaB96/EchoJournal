@@ -76,6 +76,8 @@ dependencies {
 
 
     implementation (libs.audiowaveform)
+    implementation(libs.amplituda)
+
 
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.core.splashscreen)

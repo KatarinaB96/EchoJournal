@@ -8,5 +8,7 @@ data class EntryState(
     val savedMoodIndex: Int = -1,
     val showBackConfirmationDialog: Boolean = false,
     val searchQuery: String = "",
-    val filteredTopics: List<Topic> = emptyList()
+    val filteredTopics: List<Topic> = emptyList(),
+    val audioDuration : Int = 0,
+    val recordingPath : String = "",
 )

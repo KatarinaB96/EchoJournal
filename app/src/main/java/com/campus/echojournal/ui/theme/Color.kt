@@ -33,8 +33,23 @@ val GradientColor2 = Color(0xFFEEF0FF)
 
 val BlueGradient1 = Color(0xFF578CFF)
 
-val Neutral_35 = Color(0xFF41B278)
 val Neutral_95 = Color(0xFFEEF7F3)
+val Excited_95 = Color(0xFFF5F2EF)
+val Peaceful_95 = Color(0xFFE5A87A)
+val Stressed_95 = Color(0xFFF8EFEF)
+val Sad_95 = Color(0xFFEFF4F8)
+
+val Sad_80 = Color(0xFFC5D8E9)
+val Excited_80 = Color(0xFFDDD2C8)
+val Peaceful_80 = Color(0xFFE1CEDB)
+val Stressed_80 = Color(0xFFE9C5C5)
+val Neutral_80 = Color(0xFFB9DDCB)
+
+val Sad_35 = Color(0xFF3A8EDE)
+val Excited_35 = Color(0xFFDB6C0B)
+val Peaceful_35 = Color(0xFFBE3294)
+val Stressed_35 = Color(0xFFDE3A3A)
+val Neutral_35 = Color(0xFF41B278)
 
 val SurfaceColor = Color(0xFF475D92)
 

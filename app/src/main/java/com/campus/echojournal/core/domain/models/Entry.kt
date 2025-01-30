@@ -7,6 +7,7 @@ data class Entry(
     val recordingPath: String,
     val topics: List<Topic>,
     val description: String,
+    val audioDuration: Int,
     val createdDate: Long = System.currentTimeMillis()
 )
 
