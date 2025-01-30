@@ -399,6 +399,8 @@ fun BottomSheet(
     var moodIndexPicked by remember { mutableStateOf(moodIndexFromSettings) }
     var isMoodSelected by remember { mutableStateOf(moodIndexPicked != -1) }
 
+    val moodIndexMapping = listOf(4, 3, 2, 1, 0)
+
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismiss
@@ -422,10 +424,13 @@ fun BottomSheet(
                     isMoodSelected = true
                 })
             Spacer(Modifier.height(24.dp))
+
             ButtonRow(
                 text = "Confirm",
                 onCancelClick = onCancelClick,
-                onButtonClick = { onConfirmClick(moodIndexPicked) },
+                onButtonClick = {
+                    val moodIndex = moodIndexMapping.getOrNull(moodIndexPicked) ?: -1
+                    onConfirmClick(moodIndex) },
                 isButtonEnabled = isMoodSelected,
                 showIcon = true
             )
