@@ -40,10 +40,12 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +67,7 @@ import com.campus.echojournal.R
 import com.campus.echojournal.core.domain.models.Topic
 import com.campus.echojournal.entries.presentation.components.AudioWave
 import com.campus.echojournal.entries.presentation.components.TopicPicker
+import com.campus.echojournal.entries.presentation.util.AudioWaveManager
 import com.campus.echojournal.entries.util.allMoodsList
 import com.campus.echojournal.settings.presentation.components.SelectableMood
 import com.campus.echojournal.ui.theme.Background
@@ -81,7 +84,10 @@ import com.campus.echojournal.ui.theme.PrimaryContainer
 import com.campus.echojournal.ui.theme.Secondary70
 import com.campus.echojournal.ui.theme.Secondary95
 import com.campus.echojournal.ui.theme.SurfaceVariant
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
+import java.io.File
 
 @Composable
 fun NewEntryScreenRoot(
@@ -91,6 +97,12 @@ fun NewEntryScreenRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(true) {
+        viewModel.setRecordingPath(path)
+        viewModel.setAudioDuration(
+            viewModel.player.getDuration(File(path))
+        )
+    }
     NewEntryScreen(
         onBackClick,
         path = path,
@@ -117,6 +129,21 @@ fun NewEntryScreen(
     val focusRequester = remember { FocusRequester() }
     var isSheetOpen by remember { mutableStateOf(false) }
     var selectedTopics = remember { mutableStateListOf<Topic>() }
+
+
+    val audioWaveManager: AudioWaveManager = koinInject()
+
+    var amplitudes by remember {
+        mutableStateOf(emptyList<Int>())
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(true) {
+        coroutineScope.launch {
+            amplitudes = audioWaveManager.getAmplitudes(path)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -153,8 +180,13 @@ fun NewEntryScreen(
             )
 
             AudioWave(
-                index = 1
-            )
+                audioDuration = state.audioDuration,
+                moodIndex = moodIndex,
+                amplitudes = amplitudes,
+                isActiveAudio = true,
+
+
+                )
             Spacer(Modifier.height(16.dp))
             TopicPicker(
                 defaultTopics = state.defaultTopics,
@@ -180,8 +212,9 @@ fun NewEntryScreen(
                             moodIndex = moodIndex,
                             recordingPath = path,
                             topics = selectedTopics,
-                            description = description
-                        )
+                            description = description,
+
+                            )
                     )
                 },
                 isButtonEnabled = title.isNotEmpty() && moodIndex != -1,
@@ -215,8 +248,20 @@ fun ConfirmExitDialog(onAction: (NewEntryAction) -> Unit, onBackClick: () -> Uni
         onDismissRequest = {
             onAction(NewEntryAction.OnDismissDialog)
         },
-        title = { Text(stringResource(R.string.confirm_exit), style = MaterialTheme.typography.titleMedium, color = OnErrorContainer) },
-        text = { Text(stringResource(R.string.dialog_subtitle), style = MaterialTheme.typography.labelSmall, color = OnSurface) },
+        title = {
+            Text(
+                stringResource(R.string.confirm_exit),
+                style = MaterialTheme.typography.titleMedium,
+                color = OnErrorContainer
+            )
+        },
+        text = {
+            Text(
+                stringResource(R.string.dialog_subtitle),
+                style = MaterialTheme.typography.labelSmall,
+                color = OnSurface
+            )
+        },
         confirmButton = {
             Box(
                 modifier = Modifier
@@ -313,7 +358,13 @@ fun AddTitleField(
 }
 
 @Composable
-fun ButtonRow(text: String, onCancelClick: () -> Unit, onButtonClick: () -> Unit, isButtonEnabled: Boolean, showIcon: Boolean) {
+fun ButtonRow(
+    text: String,
+    onCancelClick: () -> Unit,
+    onButtonClick: () -> Unit,
+    isButtonEnabled: Boolean,
+    showIcon: Boolean
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

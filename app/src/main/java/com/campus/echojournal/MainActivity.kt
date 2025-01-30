@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +44,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             EchoJournalTheme {
                 val navController = rememberNavController()
-                val startRecording = intent?.getBooleanExtra("START_RECORDING", false) ?: false
-                Log.d("Widget", "START_RECORDING received: $startRecording")
+                var startedRecording by remember { mutableStateOf(false) }
+
+                LaunchedEffect(Unit) {
+                    val intentStartRecording = intent?.getBooleanExtra("START_RECORDING", false) ?: false
+                    if (intentStartRecording) {
+                        startedRecording = true
+                    }
+                }
+                Log.d("Widget", "START_RECORDING received: $startedRecording")
                 NavHost(
                     navController = navController,
                     startDestination = Route.EchoGraph
@@ -54,10 +62,9 @@ class MainActivity : ComponentActivity() {
                             exitTransition = { slideOutHorizontally() },
                             popEnterTransition = { slideInHorizontally() }
                         ) {
-                            var startedRecording by remember { mutableStateOf(startRecording) }
                             val viewModel = koinViewModel<EntriesViewModel>()
                             if (startedRecording) {
-                                viewModel.setStartRecording(startRecording)
+                                viewModel.setStartRecording(startedRecording)
                             }
                             startedRecording = false
 
