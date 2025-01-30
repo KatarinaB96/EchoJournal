@@ -1,6 +1,5 @@
 package com.campus.echojournal.entries.presentation
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.campus.echojournal.core.domain.JournalRepository
@@ -14,13 +13,11 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 
 class NewEntryViewModel(
-    private val application: Application,
     private val repository: JournalRepository,
     private val dataStoreManager: DataStoreManager,
-    private val player: AndroidAudioPlayer
+     val player: AndroidAudioPlayer
 
 ) : ViewModel() {
     private val _state = MutableStateFlow(EntryState())
@@ -38,6 +35,8 @@ class NewEntryViewModel(
         SharingStarted.WhileSubscribed(5000L),
         _state.value
     )
+
+
 
     private fun getChips() {
         viewModelScope.launch {
@@ -61,7 +60,7 @@ class NewEntryViewModel(
                             recordingPath = action.recordingPath,
                             description = action.description,
                             topics = action.topics,
-                            audioDuration = player.getDuration(File(action.recordingPath))
+                            audioDuration = _state.value.audioDuration
                         )
                     )
                 }
@@ -82,6 +81,17 @@ class NewEntryViewModel(
                     it.copy(showBackConfirmationDialog = false) // Hide the dialog
                 }
             }
+        }
+    }
+fun setRecordingPath(path: String) {
+        _state.update {
+            it.copy(recordingPath = path)
+        }
+    }
+
+    fun setAudioDuration(duration: Int) {
+        _state.update {
+            it.copy(audioDuration = duration)
         }
     }
 }
