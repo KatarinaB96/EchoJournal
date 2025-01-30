@@ -13,5 +13,7 @@ sealed interface NewEntryAction {
 
     data object OnCancel : NewEntryAction
     data object OnDismissDialog : NewEntryAction
-
+    data class OnAddTopic(val name: String) : NewEntryAction
+    data class OnDeleteTopic(val name: String) : NewEntryAction
+    data class OnSearchQueryChanged(val query: String) : NewEntryAction
 }

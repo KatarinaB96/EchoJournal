@@ -376,7 +376,7 @@ private fun ChipFlowRow(
 }
 
 @Composable
-fun TopicChip(
+private fun TopicChip(
     modifier: Modifier,
     topic: Topic,
     onDelete: (Int) -> Unit = {},
