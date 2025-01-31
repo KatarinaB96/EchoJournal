@@ -39,4 +39,12 @@ class JournalRepositoryImpl(private val dao: JournalDao) : JournalRepository {
         }
         dao.insertEntryWithTopics(entryEntity, topicEntities)
     }
+
+    override fun getAllTopics(): Flow<List<Topic>> {
+        return dao.getAllTopics().map { entities ->
+            entities.map {
+                it.toDomainModel()
+            }
+        }
+    }
 }

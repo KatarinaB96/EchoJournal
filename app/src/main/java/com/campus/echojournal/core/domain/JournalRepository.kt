@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface JournalRepository {
     fun getAllDefaultTopics(): Flow<List<Topic>>
 
+    fun getAllTopics(): Flow<List<Topic>>
+
     suspend fun addTopic(topic: Topic)
 
     suspend fun deleteTopicById(topicId: Int)
