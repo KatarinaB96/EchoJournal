@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,10 +59,19 @@ fun EntriesListMoodFilterChip(
             }
 
             1 -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
 
-                Text(
-                    text = selectedList.joinToString { allMoodsList[it].second },
-                )
+                        painter = painterResource(id = allMoodsList[selectedList[0]].first),
+                        contentDescription = allMoodsList[selectedList[0]].second,
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = selectedList.joinToString { allMoodsList[it].second },
+                    )
+                }
+
+
             }
 
             2 -> {
