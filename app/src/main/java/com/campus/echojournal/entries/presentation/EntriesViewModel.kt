@@ -33,6 +33,8 @@ class EntriesViewModel(
         repository.getAllEntriesWithTopics().onEach { entries ->
             state = state.copy(entries = entries, filteredEntries = entries)
         }.launchIn(viewModelScope)
+
+
     }
 
     private val eventChannel = Channel<EntriesEvent>()
@@ -83,6 +85,10 @@ class EntriesViewModel(
             }
 
             EntriesAction.onClickAllTopics -> {
+                repository.getAllTopics().onEach {
+                    state = state.copy(topics = it)
+                }.launchIn(viewModelScope)
+
                 state = state.copy(
                     isAllTopicsOpen = !state.isAllTopicsOpen,
                     isAllMoodsOpen = if (!state.isAllTopicsOpen) false else state.isAllMoodsOpen
