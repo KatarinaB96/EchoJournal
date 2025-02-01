@@ -35,7 +35,8 @@ fun EntriesListDayView(
                 onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
                 onClickResume = onClickResume,
-                index = ( if(i == 0) 0 else if(i == entries.size -1) 2 else 1 ),
+                index = (if(i == entries.size -1 && i == 0) 3 else if(i == entries.size-1) 2  else if(i == 0) 0  else 1 ),
+               //index == 3 for single entry, index == 2 for last entry, index == 0 for first entry, index == 1 for middle entries
                 entry = entries[i],
             )
         }
