@@ -6,6 +6,7 @@ import com.campus.echojournal.entries.presentation.util.AudioWaveManager
 import kotlinx.coroutines.Dispatchers
 import linc.com.amplituda.Amplituda
 import com.campus.echojournal.entries.presentation.new_entry.NewEntryViewModel
+import com.campus.echojournal.entries.presentation.util.Counter
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -17,10 +18,11 @@ val entriesModule = module {
     single { Dispatchers.IO }
     single { AudioWaveManager(get(), get()) }
     single { AndroidAudioPlayer(androidApplication()) }
+    single { Counter() }
 
     viewModel { NewEntryViewModel(get(), get(), get() ) }
     viewModel{
-        EntriesViewModel(androidApplication(), get() , get())
+        EntriesViewModel(androidApplication(), get() , get(), get())
     }
 
 }

@@ -173,9 +173,8 @@ private fun EntriesListScreen(
                     },
                     onCloseBottomSheet = {
                             onAction(EntriesAction.OnDismissRecordAudioBottomSheet)
-
-
                     },
+                    counter = state.counterForRecordingAudioBottomSheet,
                     isRecording = state.isRecording
                 )
             }
