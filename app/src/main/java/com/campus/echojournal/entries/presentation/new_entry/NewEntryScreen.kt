@@ -1,4 +1,4 @@
-package com.campus.echojournal.entries.presentation
+package com.campus.echojournal.entries.presentation.new_entry
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
