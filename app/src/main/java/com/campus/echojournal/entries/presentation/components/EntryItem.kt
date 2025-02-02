@@ -76,7 +76,7 @@ fun EntryItem(
             Box(
                 modifier = Modifier
                     .width(1.dp)
-                    .fillMaxHeight(if (index == 2) 0.1f else 1f)
+                    .fillMaxHeight(if (index == 2) 0.1f else if(index==3)  0f else 1f)
                     .padding(top = if (index == 0) 20.dp else 0.dp)
                     .background(LineColor)
             )
