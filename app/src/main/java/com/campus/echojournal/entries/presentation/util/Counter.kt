@@ -24,7 +24,6 @@ class Counter {
             job = scope.launch {
                 while (isActive) {
                     _counterFlow.value++
-                    println( _counterFlow.value)
                     delay(1000)
                 }
             }

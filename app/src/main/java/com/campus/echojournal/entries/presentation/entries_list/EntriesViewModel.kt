@@ -11,6 +11,7 @@ import com.campus.echojournal.core.domain.JournalRepository
 import com.campus.echojournal.core.domain.models.Entry
 import com.campus.echojournal.core.utils.player.AndroidAudioPlayer
 import com.campus.echojournal.core.utils.recorder.AndroidAudioRecorder
+import com.campus.echojournal.entries.presentation.util.Counter
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,19 +22,26 @@ import java.io.File
 class EntriesViewModel(
     private val application: Application,
     private val repository: JournalRepository,
-    private val player: AndroidAudioPlayer
+    private val player: AndroidAudioPlayer,
+    private val counterManager : Counter
 ) : ViewModel() {
     var state by mutableStateOf(EntriesState())
         private set
 
-    //    private val _startRecording = MutableStateFlow(false) // Tracks if recording should start
-    //    val startRecording: StateFlow<Boolean> = _startRecording
+
+
 
     init {
+
         repository.getAllEntriesWithTopics().onEach { entries ->
             state = state.copy(entries = entries, filteredEntries = entries)
         }.launchIn(viewModelScope)
 
+        counterManager.counterFlow.onEach {
+            state = state.copy(
+                counterForRecordingAudioBottomSheet = it
+            )
+        }.launchIn(viewModelScope)
 
     }
 
@@ -72,6 +80,7 @@ class EntriesViewModel(
 
             EntriesAction.onClickAddEntry -> {
                 Log.d("Widget", " EntriesViewModel Opening bottom sheet")
+                counterManager.start()
                 state = state.copy(
                     isRecordAudioBottomSheetOpen = true
                 )
@@ -96,6 +105,7 @@ class EntriesViewModel(
             }
 
             is EntriesAction.onPauseAudio -> {
+
                 player.pause()
                 state = state.copy(
                     isPlaying = false
@@ -103,6 +113,7 @@ class EntriesViewModel(
             }
 
             EntriesAction.onPauseRecording -> {
+                counterManager.pause()
                 state = state.copy(
                     isRecording = false
                 )
@@ -132,6 +143,7 @@ class EntriesViewModel(
                 state = state.copy(
                     isRecording = true
                 )
+                counterManager.start()
                 recorder.resume()
             }
 
@@ -142,6 +154,7 @@ class EntriesViewModel(
                         audioFileUri = audioFile?.absolutePath ?: ""
                     )
                     recorder.stop()
+                    counterManager.reset()
 
                     eventChannel.send(EntriesEvent.OnSavedAudio(audioFile?.absolutePath ?: ""))
                 }
@@ -195,13 +208,10 @@ class EntriesViewModel(
                 state = state.copy(
                     isRecordAudioBottomSheetOpen = false
                 )
+                counterManager.reset()
             }
 
-            EntriesAction.loadEntries -> {
-                // Load entries
 
-
-            }
 
             else -> Unit
         }
