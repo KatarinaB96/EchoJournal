@@ -124,6 +124,9 @@ class EntriesViewModel(
                 audioFile = state.entries.find { it.id == action.id }?.recordingPath?.let {
                     File(it)
                 }
+                if(player.isPlaying.value){
+                    player.stop()
+                }
                 player.playFile(audioFile!!)
                 state = state.copy(
                     isPlaying = true,

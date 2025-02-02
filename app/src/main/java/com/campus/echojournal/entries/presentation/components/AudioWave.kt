@@ -61,7 +61,7 @@ fun AudioWave(
     audioDuration: Int,
     moodIndex: Int,
     id: Int = 0,
-    isActiveAudio : Boolean = false,
+    isActiveAudio: Boolean = false,
     onClickPlay: (Int) -> Unit = {},
     onClickPause: (Int) -> Unit = {},
     onClickResume: (Int) -> Unit = {},
@@ -109,33 +109,29 @@ fun AudioWave(
                 .clip(RoundedCornerShape(100.dp))
                 .background(Color.White)
                 .clickable {
-                    if (isPlaying) {
-                        onClickPause(id)
+                    if (isActiveAudio) {
+                        when {
+                            isPlaying -> onClickPause(id)
+                            currentPosition == 0 -> onClickPlay(id)
+                            else -> onClickResume(id)
+                        }
                     } else {
-                        if(currentPosition == 0){
-                            onClickPlay(id)
-                        }
-                        else{
-                            onClickResume(id)
-                        }
-                        coroutineScope.launch {
-                            player
-                                .getCurrentPosition()
-                                .collect {
-                                    currentPosition = it
-                                }
-                        }
-
+                        onClickPlay(id)
                     }
-                },
-            contentAlignment = Alignment.Center
+
+                    coroutineScope.launch {
+                        player.getCurrentPosition().collect { currentPosition = it }
+                    }
+                }
+,
+                    contentAlignment = Alignment.Center
         ) {
 
             Icon(
                 painter = painterResource(if (isPlaying && isActiveAudio) R.drawable.ic_pause else R.drawable.ic_play),
                 tint = getAudioWavePlayColor(moodIndex),
                 contentDescription = "Play",
-                )
+            )
         }
         Box(
             modifier = Modifier
@@ -153,14 +149,16 @@ fun AudioWave(
                 spikeWidth = 4.dp,
                 spikePadding = 2.dp,
                 amplitudes = amplitudes,
-                progress = if(isActiveAudio) waveformProgress else 0f,
+                progress = if (isActiveAudio) waveformProgress else 0f,
                 onProgressChange = { },
             )
         }
 
         Text(
             modifier = Modifier.padding(end = 8.dp),
-            text =  formatSecondsToTime(if(isActiveAudio) currentPosition else 0) + "/" + formatSecondsToTime(audioDuration),
+            text = formatSecondsToTime(if (isActiveAudio) currentPosition else 0) + "/" + formatSecondsToTime(
+                audioDuration
+            ),
             color = Color.Black,
             fontSize = 12.sp
         )
@@ -181,7 +179,7 @@ fun getColorForMood(moodIndex: Int): Color {
     }
 }
 
-fun getAuidoWaveNotPlayColor (moodIndex: Int): Color {
+fun getAuidoWaveNotPlayColor(moodIndex: Int): Color {
     return when (moodIndex) {
         0 -> Excited_80
         1 -> Peaceful_80
@@ -192,7 +190,7 @@ fun getAuidoWaveNotPlayColor (moodIndex: Int): Color {
     }
 }
 
-fun getAudioWavePlayColor (moodIndex: Int): Color {
+fun getAudioWavePlayColor(moodIndex: Int): Color {
     return when (moodIndex) {
         0 -> Excited_35
         1 -> Peaceful_35
