@@ -1,4 +1,4 @@
-package com.campus.echojournal.entries.presentation
+package com.campus.echojournal.entries.presentation.entries_list
 
 import com.campus.echojournal.core.domain.models.Topic
 

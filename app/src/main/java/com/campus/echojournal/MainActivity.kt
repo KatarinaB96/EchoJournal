@@ -21,10 +21,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.campus.echojournal.core.utils.Route
-import com.campus.echojournal.entries.presentation.EntriesListScreenRoot
-import com.campus.echojournal.entries.presentation.EntriesViewModel
-import com.campus.echojournal.entries.presentation.NewEntryScreenRoot
-import com.campus.echojournal.entries.presentation.NewEntryViewModel
+import com.campus.echojournal.entries.presentation.entries_list.EntriesListScreenRoot
+import com.campus.echojournal.entries.presentation.entries_list.EntriesViewModel
+import com.campus.echojournal.entries.presentation.new_entry.NewEntryScreenRoot
+import com.campus.echojournal.entries.presentation.new_entry.NewEntryViewModel
 import com.campus.echojournal.settings.presentation.SettingsScreenRoot
 import com.campus.echojournal.settings.presentation.SettingsViewModel
 import com.campus.echojournal.ui.theme.EchoJournalTheme
