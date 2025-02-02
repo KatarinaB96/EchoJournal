@@ -112,13 +112,17 @@ fun AudioWave(
                     if (isPlaying) {
                         onClickPause(id)
                     } else {
-                        onClickPlay(id)
+                        if(currentPosition == 0){
+                            onClickPlay(id)
+                        }
+                        else{
+                            onClickResume(id)
+                        }
                         coroutineScope.launch {
                             player
                                 .getCurrentPosition()
                                 .collect {
                                     currentPosition = it
-                                    println("Current position: $it")
                                 }
                         }
 
