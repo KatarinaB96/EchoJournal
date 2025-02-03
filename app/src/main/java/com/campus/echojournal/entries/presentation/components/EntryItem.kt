@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.campus.echojournal.core.domain.models.Entry
@@ -45,11 +44,11 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun EntryItem(
-    entry : Entry,
-    playingEntryId : Int = -1,
-    onClickPlay : (Int) -> Unit = {},
-    onClickPause : (Int) -> Unit = {},
-    onClickResume : (Int) -> Unit = {},
+    entry: Entry,
+    playingEntryId: Int = -1,
+    onClickPlay: (Int) -> Unit = {},
+    onClickPause: (Int) -> Unit = {},
+    onClickResume: (Int) -> Unit = {},
     index: Int = 0,
     modifier: Modifier = Modifier,
 ) {
@@ -59,13 +58,14 @@ fun EntryItem(
         mutableStateOf(emptyList<Int>())
     }
 
-     val coroutineScope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(true) {
         coroutineScope.launch {
             amplitudes = audioWaveManager.getAmplitudes(entry.recordingPath)
         }
     }
+
 
     val scrollState = rememberScrollState()
     Row(modifier = modifier.height(IntrinsicSize.Max)) {
@@ -76,7 +76,7 @@ fun EntryItem(
             Box(
                 modifier = Modifier
                     .width(1.dp)
-                    .fillMaxHeight(if (index == 2) 0.1f else if(index==3)  0f else 1f)
+                    .fillMaxHeight(if (index == 2) 0.1f else if (index == 3) 0f else 1f)
                     .padding(top = if (index == 0) 20.dp else 0.dp)
                     .background(LineColor)
             )
@@ -126,11 +126,11 @@ fun EntryItem(
                     moodIndex = entry.moodIndex,
                     isActiveAudio = entry.id == playingEntryId
                 )
-                Text(
-                    entry.description,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 3
-                )
+               ExpandableText(
+                    text = entry.description,
+                    modifier = Modifier.padding(top = 8.dp),
+
+               )
                 Row(
                     modifier = Modifier.horizontalScroll(
                         scrollState
@@ -156,7 +156,6 @@ fun EntryItem(
 }
 
 
-
 // TODO: Move to a common place
 
 fun formatTimeFromLong(timestamp: Long, zoneId: ZoneId = ZoneId.systemDefault()): String {
@@ -164,7 +163,6 @@ fun formatTimeFromLong(timestamp: Long, zoneId: ZoneId = ZoneId.systemDefault())
         .atZone(zoneId)
         .format(DateTimeFormatter.ofPattern("HH:mm"))
 }
-
 
 
 @Preview
@@ -181,7 +179,7 @@ private fun EntryItemPreview() {
                 description = "Description",
                 audioDuration = 0,
 
-            )
+                )
         )
     }
 }

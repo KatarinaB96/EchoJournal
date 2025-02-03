@@ -27,4 +27,6 @@
     <string name="exit">Exit</string>
     <string name="confirm_exit">Confirm Exit</string>
     <string name="dialog_subtitle">Are you sure you don\'t want to save this entry?</string>
+    <string name="show_less">Show less</string>
+    <string name="show_more">Show more</string>
 </resources>
