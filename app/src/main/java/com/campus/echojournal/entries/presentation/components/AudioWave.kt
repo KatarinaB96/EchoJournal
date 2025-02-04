@@ -120,11 +120,12 @@ fun AudioWave(
                     }
 
                     coroutineScope.launch {
-                        player.getCurrentPosition().collect { currentPosition = it }
+                        player
+                            .getCurrentPosition()
+                            .collect { currentPosition = it }
                     }
-                }
-,
-                    contentAlignment = Alignment.Center
+                },
+            contentAlignment = Alignment.Center
         ) {
 
             Icon(
@@ -135,17 +136,13 @@ fun AudioWave(
         }
         Box(
             modifier = Modifier
-                .height(32.dp)
                 .fillMaxWidth(0.6f)
-                .padding(2.dp)
         )
         {
             AudioWaveform(
-
                 waveformBrush = SolidColor(getAuidoWaveNotPlayColor(moodIndex)),
                 progressBrush = SolidColor(getAudioWavePlayColor(moodIndex)),
-                modifier = Modifier
-                    .height(32.dp),
+                modifier = Modifier.padding(vertical = 10.dp),
                 spikeWidth = 4.dp,
                 spikePadding = 2.dp,
                 amplitudes = amplitudes,
