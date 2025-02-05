@@ -16,4 +16,7 @@ sealed interface NewEntryAction {
     data class OnAddTopic(val name: String) : NewEntryAction
     data class OnDeleteTopic(val name: String) : NewEntryAction
     data class OnSearchQueryChanged(val query: String) : NewEntryAction
+    data class OnPlayAudio(val path: String) : NewEntryAction
+    data object OnPauseAudio : NewEntryAction
+    data object OnResumeAudio : NewEntryAction
 }
