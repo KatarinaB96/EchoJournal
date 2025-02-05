@@ -181,6 +181,15 @@ fun NewEntryScreen(
                 moodIndex = moodIndex,
                 amplitudes = amplitudes,
                 isActiveAudio = true,
+                onClickPlay = {
+                    onAction(NewEntryAction.OnPlayAudio(path))
+                },
+                onClickPause = {
+                    onAction(NewEntryAction.OnPauseAudio)
+                },
+                onClickResume = {
+                    onAction(NewEntryAction.OnResumeAudio)
+                }
 
 
                 )

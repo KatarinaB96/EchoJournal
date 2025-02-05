@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 
 class NewEntryViewModel(
     private val repository: JournalRepository,
@@ -126,6 +127,15 @@ class NewEntryViewModel(
                         filteredTopics = filterTopics(action.query)
                     )
                 }
+            }
+            is NewEntryAction.OnPlayAudio -> {
+                player.playFile(File(action.path))
+            }
+            NewEntryAction.OnPauseAudio -> {
+                player.pause()
+            }
+            NewEntryAction.OnResumeAudio -> {
+                player.resume()
             }
         }
     }
